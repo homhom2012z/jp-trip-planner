@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Images from design reference
 const IMAGES = {
@@ -22,6 +23,7 @@ const IMAGES = {
 };
 
 export default function HomeContent() {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col w-full font-display">
       {/* Hero Section */}
@@ -42,11 +44,10 @@ export default function HomeContent() {
           className="relative z-10 flex w-full max-w-4xl flex-col items-center gap-6"
         >
           <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl md:text-6xl drop-shadow-lg">
-            Discover the Soul of Japan
+            {t("heroTitle")}
           </h1>
           <p className="max-w-2xl text-lg font-medium text-white/90 sm:text-xl drop-shadow-md">
-            Plan your perfect journey through ancient temples, neon cities, and
-            serene landscapes.
+            {t("heroSubtitle")}
           </p>
 
           {/* Search Component */}
@@ -57,12 +58,12 @@ export default function HomeContent() {
               </span>
               <input
                 type="text"
-                placeholder="Where do you want to go?"
+                placeholder={t("searchPlaceholderHero")}
                 className="h-14 w-full border-none bg-transparent pl-12 pr-4 text-[#1b0d12] placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:ring-inset"
               />
             </div>
             <button className="h-14 w-full sm:w-auto bg-primary px-8 text-base font-bold text-white hover:bg-primary/90 transition-colors">
-              Search
+              {t("searchButton")}
             </button>
           </div>
         </motion.div>
@@ -72,26 +73,26 @@ export default function HomeContent() {
       <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6">
           <h2 className="text-2xl font-bold tracking-tight text-[#1b0d12]">
-            Explore by Category
+            {t("exploreCategory")}
           </h2>
           <div className="flex flex-wrap gap-3">
             <button className="group flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-white shadow-md shadow-primary/25 ring-2 ring-primary ring-offset-2 ring-offset-[#fcf8f9] transition-all">
               <span className="material-symbols-outlined text-[18px]">
                 travel_explore
               </span>
-              All Locations
+              {t("catAll")}
             </button>
             <button className="group flex h-10 items-center gap-2 rounded-full bg-[#f3e7eb] px-5 text-sm font-medium text-[#1b0d12] hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200">
               <span className="material-symbols-outlined text-[18px]">
                 location_city
               </span>
-              Major Cities
+              {t("catCities")}
             </button>
             <button className="group flex h-10 items-center gap-2 rounded-full bg-[#f3e7eb] px-5 text-sm font-medium text-[#1b0d12] hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200">
               <span className="material-symbols-outlined text-[18px]">
                 landscape
               </span>
-              Day Trips
+              {t("catDayTrips")}
             </button>
           </div>
         </div>
@@ -102,17 +103,15 @@ export default function HomeContent() {
         <div className="mb-6 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold text-[#1b0d12]">
-              The Metropolises
+              {t("metroTitle")}
             </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Dive into the electric energy of Japan's biggest hubs.
-            </p>
+            <p className="mt-1 text-sm text-gray-500">{t("metroSubtitle")}</p>
           </div>
           <a
             href="#"
             className="hidden text-sm font-bold text-primary hover:underline sm:block"
           >
-            View all
+            {t("viewAll")}
           </a>
         </div>
 
@@ -133,16 +132,16 @@ export default function HomeContent() {
             <div className="relative z-10 p-6">
               <div className="mb-2 flex gap-2">
                 <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
-                  Urban
+                  {t("tokyoTag1")}
                 </span>
                 <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
-                  Shopping
+                  {t("tokyoTag2")}
                 </span>
               </div>
               <h3 className="text-3xl font-bold text-white">Tokyo</h3>
               <div className="mt-2 flex items-center justify-between">
                 <p className="text-sm font-medium text-white/90">
-                  A neon-lit fusion of future and tradition.
+                  {t("tokyoDesc")}
                 </p>
                 <button className="flex size-10 items-center justify-center rounded-full bg-white text-primary transition-transform group-hover:scale-110">
                   <span className="material-symbols-outlined">
@@ -169,16 +168,16 @@ export default function HomeContent() {
             <div className="relative z-10 p-6">
               <div className="mb-2 flex gap-2">
                 <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
-                  Food
+                  {t("osakaTag1")}
                 </span>
                 <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
-                  Nightlife
+                  {t("osakaTag2")}
                 </span>
               </div>
               <h3 className="text-3xl font-bold text-white">Osaka</h3>
               <div className="mt-2 flex items-center justify-between">
                 <p className="text-sm font-medium text-white/90">
-                  Japan's kitchen and comedy capital.
+                  {t("osakaDesc")}
                 </p>
                 <button className="flex size-10 items-center justify-center rounded-full bg-white text-primary transition-transform group-hover:scale-110">
                   <span className="material-symbols-outlined">
@@ -195,13 +194,13 @@ export default function HomeContent() {
       <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 bg-white rounded-3xl my-8">
         <div className="mb-8 text-center">
           <span className="text-primary font-bold tracking-wider uppercase text-sm">
-            Escape the Rush
+            {t("escapeRush")}
           </span>
           <h2 className="mt-2 text-3xl font-bold text-[#1b0d12]">
-            Day Trips & Retreats
+            {t("dayTripsTitle")}
           </h2>
           <p className="mx-auto mt-2 max-w-2xl text-gray-500">
-            Discover serenity just a short train ride away from the major hubs.
+            {t("dayTripsSubtitle")}
           </p>
         </div>
 
@@ -226,16 +225,15 @@ export default function HomeContent() {
                 <span className="material-symbols-outlined text-[16px]">
                   temple_buddhist
                 </span>
-                <span>Historical</span>
+                <span>{t("kyotoTag")}</span>
               </div>
               <h3 className="text-xl font-bold text-[#1b0d12]">Kyoto</h3>
               <p className="mt-2 line-clamp-2 text-sm text-gray-600">
-                The cultural heart of Japan, famous for its classical Buddhist
-                temples, gardens, and imperial palaces.
+                {t("kyotoDesc")}
               </p>
               <div className="mt-auto pt-4">
                 <button className="w-full rounded-lg bg-[#f3e7eb] py-2.5 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-white">
-                  Plan Trip
+                  {t("planTrip")}
                 </button>
               </div>
             </div>
@@ -261,16 +259,15 @@ export default function HomeContent() {
                 <span className="material-symbols-outlined text-[16px]">
                   local_cafe
                 </span>
-                <span>Matcha & Culture</span>
+                <span>{t("ujiTag")}</span>
               </div>
               <h3 className="text-xl font-bold text-[#1b0d12]">Uji</h3>
               <p className="mt-2 line-clamp-2 text-sm text-gray-600">
-                A serene riverside city renowned for having the best green tea
-                in the world.
+                {t("ujiDesc")}
               </p>
               <div className="mt-auto pt-4">
                 <button className="w-full rounded-lg bg-[#f3e7eb] py-2.5 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-white">
-                  Plan Trip
+                  {t("planTrip")}
                 </button>
               </div>
             </div>
@@ -296,15 +293,15 @@ export default function HomeContent() {
                 <span className="material-symbols-outlined text-[16px]">
                   waves
                 </span>
-                <span>Coastal & Shrines</span>
+                <span>{t("kamakuraTag")}</span>
               </div>
               <h3 className="text-xl font-bold text-[#1b0d12]">Kamakura</h3>
               <p className="mt-2 line-clamp-2 text-sm text-gray-600">
-                A coastal town often called the Kyoto of Eastern Japan.
+                {t("kamakuraDesc")}
               </p>
               <div className="mt-auto pt-4">
                 <button className="w-full rounded-lg bg-[#f3e7eb] py-2.5 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-white">
-                  Plan Trip
+                  {t("planTrip")}
                 </button>
               </div>
             </div>
@@ -315,7 +312,7 @@ export default function HomeContent() {
       {/* Section 3: Curated Itineraries */}
       <section className="mx-auto mb-20 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 className="mb-6 text-2xl font-bold text-[#1b0d12]">
-          Curated Itineraries
+          {t("curatedTitle")}
         </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="relative flex min-h-[240px] items-center overflow-hidden rounded-xl bg-gray-900 shadow-md group cursor-pointer">
@@ -326,15 +323,14 @@ export default function HomeContent() {
             />
             <div className="relative z-10 p-8">
               <span className="mb-3 inline-block rounded-md bg-primary px-3 py-1 text-xs font-bold text-white uppercase tracking-wider">
-                Most Popular
+                {t("itin1Tag")}
               </span>
-              <h3 className="text-3xl font-bold text-white">7 Days in Tokyo</h3>
-              <p className="mt-2 max-w-md text-gray-200">
-                The ultimate guide for first-timers covering Shibuya, Shinjuku,
-                Asakusa.
-              </p>
+              <h3 className="text-3xl font-bold text-white">
+                {t("itin1Title")}
+              </h3>
+              <p className="mt-2 max-w-md text-gray-200">{t("itin1Desc")}</p>
               <div className="mt-6 flex items-center gap-2 text-sm font-bold text-white">
-                <span>View Itinerary</span>
+                <span>{t("viewItinerary")}</span>
                 <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">
                   arrow_forward
                 </span>
@@ -350,16 +346,14 @@ export default function HomeContent() {
             />
             <div className="relative z-10 p-8">
               <span className="mb-3 inline-block rounded-md bg-white/20 px-3 py-1 text-xs font-bold text-white uppercase tracking-wider backdrop-blur-md">
-                Golden Route
+                {t("itin2Tag")}
               </span>
               <h3 className="text-3xl font-bold text-white">
-                The Old Capital Route
+                {t("itin2Title")}
               </h3>
-              <p className="mt-2 max-w-md text-gray-200">
-                A journey through history visiting Kyoto, Nara, and Osaka.
-              </p>
+              <p className="mt-2 max-w-md text-gray-200">{t("itin2Desc")}</p>
               <div className="mt-6 flex items-center gap-2 text-sm font-bold text-white">
-                <span>View Itinerary</span>
+                <span>{t("viewItinerary")}</span>
                 <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">
                   arrow_forward
                 </span>

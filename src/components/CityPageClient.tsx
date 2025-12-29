@@ -9,6 +9,7 @@ import { useState, useMemo } from "react";
 import { useSavedPlaces } from "@/context/SavedPlacesContext";
 import { ItineraryProvider } from "@/context/ItineraryContext";
 import ItineraryPlanner from "./ItineraryPlanner";
+import { useLanguage } from "@/context/LanguageContext";
 
 const MapMap = dynamic(() => import("./MapMap"), {
   ssr: false,
@@ -42,6 +43,7 @@ export default function CityPageClient({
 
   const [searchQuery, setSearchQuery] = useState("");
   const { isSaved } = useSavedPlaces();
+  const { t } = useLanguage();
 
   const filteredLocations = useMemo(() => {
     let result = [...locations];
@@ -157,7 +159,7 @@ export default function CityPageClient({
                   <div className="flex w-full items-center bg-white border border-transparent shadow-[0_2px_6px_rgba(0,0,0,0.15)] rounded-lg h-10 px-4 focus-within:ring-2 focus-within:ring-[#1a73e8]/50 transition-all">
                     <input
                       className="w-full bg-transparent border-none focus:ring-0 text-sm text-[#202124] placeholder:text-[#5f6368] outline-none h-full"
-                      placeholder={`Search in ${cityName}`}
+                      placeholder={`${t("searchPlaceholder")} ${cityName}`}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -182,7 +184,7 @@ export default function CityPageClient({
                     {cityName === "Tokyo" &&
                       "Neon-lit fusion of future and tradition."}
                     {!["Kyoto", "Tokyo"].includes(cityName) &&
-                      `Explore curated spots in ${cityName}.`}
+                      `${t("explore")} ${cityName}.`}
                   </p>
                 </div>
 
@@ -196,7 +198,7 @@ export default function CityPageClient({
                         : "text-[#5f6368] hover:text-[#202124]"
                     }`}
                   >
-                    Explore
+                    {t("explore")}
                   </button>
                   <button
                     onClick={() => setActiveTab("planner")}
@@ -206,7 +208,7 @@ export default function CityPageClient({
                         : "text-[#5f6368] hover:text-[#202124]"
                     }`}
                   >
-                    Planner
+                    {t("planner")}
                   </button>
                 </div>
 
@@ -226,7 +228,7 @@ export default function CityPageClient({
                             : "bg-white text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
                         }`}
                       >
-                        Top rated
+                        {t("topRated")}
                       </button>
                       <button
                         onClick={() =>
@@ -243,7 +245,7 @@ export default function CityPageClient({
                         <span className="material-symbols-outlined text-[16px]">
                           bookmark
                         </span>
-                        Saved
+                        {t("saved")}
                       </button>
                       <button
                         onClick={() =>
@@ -257,7 +259,7 @@ export default function CityPageClient({
                             : "bg-white text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
                         }`}
                       >
-                        Dining
+                        {t("dining")}
                       </button>
                       <button
                         onClick={() =>
@@ -273,7 +275,7 @@ export default function CityPageClient({
                             : "bg-white text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
                         }`}
                       >
-                        Attractions
+                        {t("attractions")}
                       </button>
                     </div>
 
@@ -344,11 +346,40 @@ export default function CityPageClient({
             onToggleTransit={() => setShowTransit(!showTransit)}
           />
 
+          {/* Floating Search Bar (Mobile & Map View) */}
+          <div className="absolute top-4 left-4 right-16 z-10 md:w-80 md:right-auto md:left-4">
+            <div className="flex w-full items-center bg-white/90 backdrop-blur-sm border border-gray-200 shadow-md rounded-lg h-11 px-4 focus-within:ring-2 focus-within:ring-[#1a73e8]/50 transition-all">
+              <input
+                className="flex-1 bg-transparent border-none focus:ring-0 text-sm text-[#202124] placeholder:text-[#5f6368] outline-none h-full min-w-0"
+                placeholder={`${t("searchPlaceholder")} ${cityName}`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="p-1 hover:bg-gray-100 rounded-full text-gray-500 shrink-0"
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    close
+                  </span>
+                </button>
+              )}
+              {!searchQuery && (
+                <button className="p-1.5 text-[#1a73e8] border-l border-gray-200 ml-2 shrink-0">
+                  <span className="material-symbols-outlined text-[20px]">
+                    search
+                  </span>
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Floating Detail Panel (Option A) */}
           {selectedLocation && (
             <div
               className={`absolute inset-x-0 bottom-0 z-50 md:h-[calc(100%-32px)] md:w-[400px] md:top-4 md:left-4 md:bottom-auto bg-white rounded-t-xl md:rounded-xl shadow-2xl overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-10 md:slide-in-from-left-4 fade-in ${
-                isMobilePanelExpanded ? "h-[85vh]" : "h-[45vh]"
+                isMobilePanelExpanded ? "h-[80vh]" : "h-[45vh]"
               }`}
             >
               <LocationDetailPanel
@@ -379,7 +410,7 @@ export default function CityPageClient({
           <span className="material-symbols-outlined text-[20px]">
             {showMobileMap ? "list" : "map"}
           </span>
-          {showMobileMap ? "Show List" : "View Map"}
+          {showMobileMap ? t("showList") : t("viewMap")}
         </button>
       </div>
     </ItineraryProvider>

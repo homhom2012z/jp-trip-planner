@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { SavedPlacesProvider } from "@/context/SavedPlacesContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -30,10 +31,14 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased h-full flex flex-col bg-background-light text-text-main custom-scrollbar overflow-hidden">
-        <SavedPlacesProvider>
-          <Header />
-          <div className="flex-1 flex flex-col overflow-hidden">{children}</div>
-        </SavedPlacesProvider>
+        <LanguageProvider>
+          <SavedPlacesProvider>
+            <Header />
+            <div className="flex-1 flex flex-col overflow-hidden">
+              {children}
+            </div>
+          </SavedPlacesProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

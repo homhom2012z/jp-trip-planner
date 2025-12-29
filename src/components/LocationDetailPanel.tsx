@@ -6,6 +6,7 @@ import { getFallbackImage } from "@/lib/images";
 import { useSavedPlaces } from "@/context/SavedPlacesContext";
 import { getDistanceFromHub } from "@/lib/distance";
 import { getStableRandom } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ... (keep lines 8-135 unchanged - handled via context of replacement below if I could, but replace_file_content needs contiguity. I will use multi_replace to be safe and efficient)
 
@@ -71,6 +72,7 @@ export default function LocationDetailPanel({
 
   const { isSaved, toggleSaved } = useSavedPlaces();
   const saved = isSaved(location.id);
+  const { t } = useLanguage();
 
   // Scroll to top when location changes
   useEffect(() => {
@@ -243,11 +245,11 @@ export default function LocationDetailPanel({
 
   const isOpen = placeData?.opening_hours?.isOpen
     ? placeData.opening_hours.isOpen()
-      ? "Open now"
-      : "Closed"
-    : "Check hours";
+      ? t("openNow")
+      : t("closed")
+    : t("checkHours");
   const isOpenColor =
-    isOpen === "Open now" ? "text-green-600" : "text-[#d93025]";
+    isOpen === t("openNow") ? "text-green-600" : "text-[#d93025]";
 
   /* DYNAMIC CENTER CALCULATION restore */
   const distanceInfo =
@@ -292,7 +294,13 @@ export default function LocationDetailPanel({
         onTouchEnd={handleTouchEnd}
         className="md:hidden w-full h-8 flex items-center justify-center bg-white rounded-t-xl absolute top-0 inset-x-0 z-30 cursor-pointer border-b border-gray-100 touch-none"
       >
-        <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+        {isExpanded ? (
+          <span className="material-symbols-outlined text-gray-400 text-[24px]">
+            expand_more
+          </span>
+        ) : (
+          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+        )}
       </div>
 
       {/* Floating Back Button - Moved down to avoid overlap with drag handle */}
@@ -307,8 +315,12 @@ export default function LocationDetailPanel({
         </button>
       </div>
 
-      {/* Hero Image */}
-      <div className="h-[250px] w-full shrink-0 relative bg-gray-200">
+      {/* Hero Image - Tap or Swipe to Interact */}
+      <div
+        className="h-[250px] w-full shrink-0 relative bg-gray-200 touch-none"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <img
           src={activePhoto}
           alt={location.name}
@@ -396,7 +408,7 @@ export default function LocationDetailPanel({
                 </span>
               </div>
               <span className="text-xs text-red-500 font-medium">
-                {saved ? "Saved" : "Save"}
+                {saved ? t("saved") : t("save")}
               </span>
             </button>
 
@@ -421,7 +433,8 @@ export default function LocationDetailPanel({
               {address} <br />
               {distanceInfo && (
                 <span className="text-[#70757a] text-sm mt-0.5 block">
-                  {distanceInfo.distanceKm} km from {distanceInfo.hubName}
+                  {distanceInfo.distanceKm} km {t("from")}{" "}
+                  {distanceInfo.hubName}
                 </span>
               )}
               {nearbyStations.length > 0 && (
@@ -455,7 +468,7 @@ export default function LocationDetailPanel({
                       <span className="material-symbols-outlined text-[16px]">
                         {st.type === "Bus" ? "directions_bus" : "train"}
                       </span>
-                      {st.distance} from {st.name}
+                      {st.distance} {t("from")} {st.name}
                     </button>
                   ))}
                 </div>
@@ -488,7 +501,7 @@ export default function LocationDetailPanel({
               rel="noreferrer"
               className="text-base text-[#3c4043] flex-1 truncate underline cursor-pointer hover:text-blue-700"
             >
-              website
+              {t("website")}
             </a>
           </div>
 
@@ -502,7 +515,9 @@ export default function LocationDetailPanel({
 
         {/* Photos Section */}
         <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-[#202124] mb-4">Photos</h3>
+          <h3 className="text-lg font-medium text-[#202124] mb-4">
+            {t("photos")}
+          </h3>
           {placeData?.photos && placeData.photos.length > 0 ? (
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
               {placeData.photos.slice(0, 5).map((photo, i) => (
@@ -524,15 +539,15 @@ export default function LocationDetailPanel({
               ))}
             </div>
           ) : (
-            <p className="text-[#70757a] text-sm">
-              No additional photos available.
-            </p>
+            <p className="text-[#70757a] text-sm">{t("noPhotos")}</p>
           )}
         </div>
 
         {/* Reviews */}
         <div className="p-6 text-[#3c4043] pb-20">
-          <h3 className="text-lg font-medium text-[#202124] mb-4">Reviews</h3>
+          <h3 className="text-lg font-medium text-[#202124] mb-4">
+            {t("reviews")}
+          </h3>
 
           {placeData?.reviews && placeData.reviews.length > 0 ? (
             <div className="flex flex-col gap-6">
@@ -574,7 +589,7 @@ export default function LocationDetailPanel({
               ))}
             </div>
           ) : (
-            <p className="text-[#70757a] text-sm">Loading reviews...</p>
+            <p className="text-[#70757a] text-sm">{t("loadingReviews")}</p>
           )}
         </div>
       </div>
