@@ -10,7 +10,7 @@ export default function Footer() {
               <span className="material-symbols-outlined text-primary text-2xl">
                 travel_explore
               </span>
-              <span className="text-lg font-bold">JapanTravel</span>
+              <span className="text-lg font-bold">JapanTripPlanner</span>
             </div>
             <p className="text-sm text-gray-500 leading-relaxed">
               Your trusted companion for exploring the Land of the Rising Sun.
@@ -104,7 +104,7 @@ export default function Footer() {
 
         <div className="mt-12 border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-gray-400">
-            © 2023 JapanTravel. All rights reserved.
+            © 2023 JapanTripPlanner. All rights reserved.
           </p>
           <div className="flex gap-6">
             <a className="text-gray-400 hover:text-primary text-xs" href="#">

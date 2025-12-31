@@ -143,20 +143,59 @@ export default function MapMap({
           clickableIcons: true, // Explicitly enable POI clicks
         }}
         onClick={(e: google.maps.MapMouseEvent | any) => {
+          // 1. Standard POI Click (Business, Attraction, etc.)
           if (e.placeId && onPoiClick) {
-            // Prevent standard info window if possible (though check logic)
             e.stop();
             onPoiClick({
               id: `poi-${e.placeId}`,
               googlePlaceId: e.placeId,
-              name: "Loading...", // Will be updated by detail panel
-              city: "Japan", // Generic fallback
-              type: "Train Station", // Assume transit for now per user request context, or generic
+              name: "Loading...",
+              city: "Japan",
+              type: "Point of Interest",
               priceJpy: "-",
               priceThb: "-",
               googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${e.placeId}`,
               lat: e.latLng?.lat(),
               lng: e.latLng?.lng(),
+            });
+            return;
+          }
+
+          // 2. Hybrid Fallback: Click on "Dead" Transit Icon -> Search Nearby
+          // If no placeId, check if we clicked near a transit station
+          if (map && e.latLng && onPoiClick) {
+            const service = new window.google.maps.places.PlacesService(map);
+            const request = {
+              location: e.latLng,
+              radius: 50, // Small radius to detect if user clicked "on" a station
+              type: "transit_station", // Look specifically for transit
+            };
+
+            service.nearbySearch(request, (results, status) => {
+              if (
+                status === window.google.maps.places.PlacesServiceStatus.OK &&
+                results &&
+                results.length > 0
+              ) {
+                // Found a station near the click! Use the closest one.
+                const station = results[0];
+                console.log("Hybrid Click Detected Station:", station);
+
+                onPoiClick({
+                  id: `transit-${station.place_id}`,
+                  googlePlaceId: station.place_id,
+                  name: station.name || "Transit Station",
+                  city: "Japan",
+                  type: "Transit Station",
+                  priceJpy: "-",
+                  priceThb: "-",
+                  googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${station.place_id}`,
+                  lat: station.geometry?.location?.lat(),
+                  lng: station.geometry?.location?.lng(),
+                  description: "Public Transport",
+                  photoUrl: station.photos?.[0]?.getUrl({ maxWidth: 400 }),
+                });
+              }
             });
           }
         }}

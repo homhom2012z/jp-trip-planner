@@ -12,7 +12,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "JapanTravel - Your Planner",
+  title: "JapanTripPlanner - Your Planner",
   description:
     "Your personalized guide to the best eats, sights, and hidden gems.",
 };

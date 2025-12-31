@@ -28,7 +28,7 @@ export default function Header() {
               </span>
             </div>
             <h1 className="text-xl font-bold tracking-tight text-[#1b0d12]">
-              JapanTravel
+              JapanTripPlanner
             </h1>
           </Link>
 

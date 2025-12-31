@@ -347,7 +347,7 @@ export default function CityPageClient({
           />
 
           {/* Floating Search Bar (Mobile & Map View) */}
-          <div className="absolute top-4 left-4 right-16 z-10 md:w-80 md:right-auto md:left-4">
+          <div className="absolute top-20 md:top-4 left-4 right-16 z-10 md:w-80 md:right-auto md:left-4">
             <div className="flex w-full items-center bg-white/90 backdrop-blur-sm border border-gray-200 shadow-md rounded-lg h-11 px-4 focus-within:ring-2 focus-within:ring-[#1a73e8]/50 transition-all">
               <input
                 className="flex-1 bg-transparent border-none focus:ring-0 text-sm text-[#202124] placeholder:text-[#5f6368] outline-none h-full min-w-0"
