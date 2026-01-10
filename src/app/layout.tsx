@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+// import Footer from "@/components/Footer";
+import OfflineIndicator from "@/components/OfflineIndicator";
 import { SavedPlacesProvider } from "@/context/SavedPlacesContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { UserProvider } from "@/context/UserContext";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -15,6 +18,14 @@ export const metadata: Metadata = {
   title: "JapanTripPlanner - Your Planner",
   description:
     "Your personalized guide to the best eats, sights, and hidden gems.",
+  manifest: "/manifest.json",
+};
+
+export const viewport = {
+  themeColor: "#e91e63",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -32,12 +43,16 @@ export default function RootLayout({
       </head>
       <body className="antialiased h-full flex flex-col bg-background-light text-text-main custom-scrollbar overflow-hidden">
         <LanguageProvider>
-          <SavedPlacesProvider>
-            <Header />
-            <div className="flex-1 flex flex-col overflow-hidden">
-              {children}
-            </div>
-          </SavedPlacesProvider>
+          <UserProvider>
+            <SavedPlacesProvider>
+              <Header />
+              <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
+                {children}
+              </div>
+              <OfflineIndicator />
+              <Toaster position="bottom-right" reverseOrder={false} />
+            </SavedPlacesProvider>
+          </UserProvider>
         </LanguageProvider>
       </body>
     </html>

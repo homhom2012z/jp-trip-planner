@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 
 // Images from design reference
-const IMAGES = {
+const IMAGES: Record<string, string> = {
   hero: "https://lh3.googleusercontent.com/aida-public/AB6AXuBAOn5zQZkbr9jFE1ItTqjzLQMBCvF2_BATH3ojSDg353_luSAcj2X8resm_yA-WblarYe8T4Ft-KFGCATQtDgOgD8phawmZgTs_ATIcGwzbd7smSrZ8ZPYx8iSsaSve5_qLMuIrR8rBuadGQzhpc1C8SrjyV14mtEPpdI4MJCPaETgYE9evIf6WHFElGYR9EkX_UdB_3-HU380OAKWw68eU7eXHgszR1EL-bBiKc4bZ7z6XN9d7snNFkFT6kWLghkAAy5o4mt1mgFl",
   tokyo:
     "https://lh3.googleusercontent.com/aida-public/AB6AXuCG0Ur07S_wNb0rrQuziWonHcGFoEaH7I171OMuQqvzi0z1LUVvCv2_DEiR_C2OZV4uOCjV-vZj6h0F0To4KDF10APsDYosTrJh34zRrTNkNqEK0UEELi-kfNVgHO-PTXJD_qy7qjQwzrRr95kPk7kgVit9Z9CQCyIxksdDqsy8Vg6XyxE5NcOL_iOm6lOIqN_H3SfHjGPYT32uf00jIk3xGKwiHHAUhg5aNGw53FimqFjFfr6z3IZwkl_7ZmZXEok_zs5FWE7hD-S2",
@@ -24,6 +27,46 @@ const IMAGES = {
 
 export default function HomeContent() {
   const { t } = useLanguage();
+  const router = useRouter();
+  const { user, locations } = useUser();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/city/${searchQuery.toLowerCase().trim()}`);
+    }
+  };
+
+  // Dynamic Cities Logic
+  const cities = locations.reduce((acc, loc) => {
+    if (!loc.city) return acc;
+    const city = loc.city.trim();
+    if (!acc[city]) {
+      acc[city] = {
+        name: city,
+        count: 0,
+        photoUrl: loc.photoUrl, // First photo found as fallback
+      };
+    }
+    acc[city].count += 1;
+    // Prefer photoUrl if missing
+    if (!acc[city].photoUrl && loc.photoUrl) {
+      acc[city].photoUrl = loc.photoUrl;
+    }
+    return acc;
+  }, {} as Record<string, { name: string; count: number; photoUrl?: string }>);
+
+  const cityList = Object.values(cities).sort((a, b) => b.count - a.count);
+  const showDynamic = user && cityList.length > 0;
+
+  const getCityImage = (cityName: string, fallbackUrl?: string) => {
+    const key = cityName.toLowerCase();
+    if (IMAGES[key]) return IMAGES[key];
+    if (fallbackUrl) return fallbackUrl;
+    return "https://images.unsplash.com/photo-1492571350019-22de08371fd3?auto=format&fit=crop&q=80"; // Generic fallback
+  };
+
   return (
     <div className="flex flex-col w-full font-display">
       {/* Hero Section */}
@@ -51,7 +94,10 @@ export default function HomeContent() {
           </p>
 
           {/* Search Component */}
-          <div className="mt-4 flex w-full max-w-lg flex-col sm:flex-row shadow-xl rounded-xl overflow-hidden">
+          <form
+            onSubmit={handleSearch}
+            className="mt-4 flex w-full max-w-lg flex-col sm:flex-row shadow-xl rounded-xl overflow-hidden"
+          >
             <div className="relative flex w-full flex-1 items-center bg-white">
               <span className="material-symbols-outlined absolute left-4 text-primary">
                 search
@@ -60,52 +106,73 @@ export default function HomeContent() {
                 type="text"
                 placeholder={t("searchPlaceholderHero")}
                 className="h-14 w-full border-none bg-transparent pl-12 pr-4 text-[#1b0d12] placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:ring-inset"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <button className="h-14 w-full sm:w-auto bg-primary px-8 text-base font-bold text-white hover:bg-primary/90 transition-colors">
+            <button
+              type="submit"
+              className="h-14 w-full sm:w-auto bg-primary px-8 text-base font-bold text-white hover:bg-primary/90 transition-colors"
+            >
               {t("searchButton")}
             </button>
-          </div>
+          </form>
         </motion.div>
       </section>
 
       {/* Filters / Categories */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <section
+        id="destinations"
+        className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+      >
         <div className="flex flex-col gap-6">
           <h2 className="text-2xl font-bold tracking-tight text-[#1b0d12]">
             {t("exploreCategory")}
           </h2>
           <div className="flex flex-wrap gap-3">
-            <button className="group flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-white shadow-md shadow-primary/25 ring-2 ring-primary ring-offset-2 ring-offset-[#fcf8f9] transition-all">
+            <a
+              href="#destinations"
+              className="group flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-white shadow-md shadow-primary/25 ring-2 ring-primary ring-offset-2 ring-offset-[#fcf8f9] transition-all"
+            >
               <span className="material-symbols-outlined text-[18px]">
                 travel_explore
               </span>
               {t("catAll")}
-            </button>
-            <button className="group flex h-10 items-center gap-2 rounded-full bg-[#f3e7eb] px-5 text-sm font-medium text-[#1b0d12] hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200">
+            </a>
+            <a
+              href="#destinations"
+              className="group flex h-10 items-center gap-2 rounded-full bg-[#f3e7eb] px-5 text-sm font-medium text-[#1b0d12] hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200"
+            >
               <span className="material-symbols-outlined text-[18px]">
                 location_city
               </span>
               {t("catCities")}
-            </button>
-            <button className="group flex h-10 items-center gap-2 rounded-full bg-[#f3e7eb] px-5 text-sm font-medium text-[#1b0d12] hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200">
+            </a>
+            <a
+              href="#day-trips"
+              className="group flex h-10 items-center gap-2 rounded-full bg-[#f3e7eb] px-5 text-sm font-medium text-[#1b0d12] hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200"
+            >
               <span className="material-symbols-outlined text-[18px]">
                 landscape
               </span>
               {t("catDayTrips")}
-            </button>
+            </a>
           </div>
         </div>
       </section>
 
-      {/* Section 1: The Metropolises */}
+      {/* Section 1: City Destinations (Dynamic or Static) */}
       <section className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold text-[#1b0d12]">
-              {t("metroTitle")}
+              {showDynamic ? "Your Destinations" : t("metroTitle")}
             </h2>
-            <p className="mt-1 text-sm text-gray-500">{t("metroSubtitle")}</p>
+            <p className="mt-1 text-sm text-gray-500">
+              {showDynamic
+                ? `You have places saved in ${cityList.length} cities.`
+                : t("metroSubtitle")}
+            </p>
           </div>
           <a
             href="#"
@@ -116,82 +183,128 @@ export default function HomeContent() {
         </div>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
-          {/* Tokyo */}
-          <Link
-            href="/city/tokyo"
-            className="group relative flex h-[320px] w-full cursor-pointer flex-col justify-end overflow-hidden rounded-xl bg-gray-200 shadow-sm transition-all hover:shadow-xl"
-          >
-            <div className="absolute inset-0 h-full w-full">
-              <img
-                src={IMAGES.tokyo}
-                alt="Tokyo"
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-            </div>
-            <div className="relative z-10 p-6">
-              <div className="mb-2 flex gap-2">
-                <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
-                  {t("tokyoTag1")}
-                </span>
-                <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
-                  {t("tokyoTag2")}
-                </span>
-              </div>
-              <h3 className="text-3xl font-bold text-white">Tokyo</h3>
-              <div className="mt-2 flex items-center justify-between">
-                <p className="text-sm font-medium text-white/90">
-                  {t("tokyoDesc")}
-                </p>
-                <button className="flex size-10 items-center justify-center rounded-full bg-white text-primary transition-transform group-hover:scale-110">
-                  <span className="material-symbols-outlined">
-                    arrow_forward
-                  </span>
-                </button>
-              </div>
-            </div>
-          </Link>
+          {showDynamic ? (
+            // Dynamic Rendering
+            cityList.map((city) => (
+              <Link
+                key={city.name}
+                href={`/city/${city.name.toLowerCase()}`}
+                className="group relative flex h-[320px] w-full cursor-pointer flex-col justify-end overflow-hidden rounded-xl bg-gray-200 shadow-sm transition-all hover:shadow-xl"
+              >
+                <div className="absolute inset-0 h-full w-full">
+                  <img
+                    src={getCityImage(city.name, city.photoUrl)}
+                    alt={city.name}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                </div>
+                <div className="relative z-10 p-6">
+                  <div className="mb-2 flex gap-2">
+                    <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
+                      {city.count} Spots
+                    </span>
+                  </div>
+                  <h3 className="text-3xl font-bold text-white uppercase tracking-wider">
+                    {city.name}
+                  </h3>
+                  <div className="mt-2 flex items-center justify-between">
+                    <p className="text-sm font-medium text-white/90">
+                      Explore your saved places in {city.name}.
+                    </p>
+                    <button className="flex size-10 items-center justify-center rounded-full bg-white text-primary transition-transform group-hover:scale-110">
+                      <span className="material-symbols-outlined">
+                        arrow_forward
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            // Static Rendering (Fallback)
+            <>
+              {/* Tokyo */}
+              <Link
+                href="/city/tokyo"
+                className="group relative flex h-[320px] w-full cursor-pointer flex-col justify-end overflow-hidden rounded-xl bg-gray-200 shadow-sm transition-all hover:shadow-xl"
+              >
+                <div className="absolute inset-0 h-full w-full">
+                  <img
+                    src={IMAGES.tokyo}
+                    alt="Tokyo"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                </div>
+                <div className="relative z-10 p-6">
+                  <div className="mb-2 flex gap-2">
+                    <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
+                      {t("tokyoTag1")}
+                    </span>
+                    <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
+                      {t("tokyoTag2")}
+                    </span>
+                  </div>
+                  <h3 className="text-3xl font-bold text-white">Tokyo</h3>
+                  <div className="mt-2 flex items-center justify-between">
+                    <p className="text-sm font-medium text-white/90">
+                      {t("tokyoDesc")}
+                    </p>
+                    <button className="flex size-10 items-center justify-center rounded-full bg-white text-primary transition-transform group-hover:scale-110">
+                      <span className="material-symbols-outlined">
+                        arrow_forward
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </Link>
 
-          {/* Osaka */}
-          <Link
-            href="/city/osaka"
-            className="group relative flex h-[320px] w-full cursor-pointer flex-col justify-end overflow-hidden rounded-xl bg-gray-200 shadow-sm transition-all hover:shadow-xl"
-          >
-            <div className="absolute inset-0 h-full w-full">
-              <img
-                src={IMAGES.osaka}
-                alt="Osaka"
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-            </div>
-            <div className="relative z-10 p-6">
-              <div className="mb-2 flex gap-2">
-                <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
-                  {t("osakaTag1")}
-                </span>
-                <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
-                  {t("osakaTag2")}
-                </span>
-              </div>
-              <h3 className="text-3xl font-bold text-white">Osaka</h3>
-              <div className="mt-2 flex items-center justify-between">
-                <p className="text-sm font-medium text-white/90">
-                  {t("osakaDesc")}
-                </p>
-                <button className="flex size-10 items-center justify-center rounded-full bg-white text-primary transition-transform group-hover:scale-110">
-                  <span className="material-symbols-outlined">
-                    arrow_forward
-                  </span>
-                </button>
-              </div>
-            </div>
-          </Link>
+              {/* Osaka */}
+              <Link
+                href="/city/osaka"
+                className="group relative flex h-[320px] w-full cursor-pointer flex-col justify-end overflow-hidden rounded-xl bg-gray-200 shadow-sm transition-all hover:shadow-xl"
+              >
+                <div className="absolute inset-0 h-full w-full">
+                  <img
+                    src={IMAGES.osaka}
+                    alt="Osaka"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                </div>
+                <div className="relative z-10 p-6">
+                  <div className="mb-2 flex gap-2">
+                    <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
+                      {t("osakaTag1")}
+                    </span>
+                    <span className="inline-flex items-center rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white backdrop-blur-md">
+                      {t("osakaTag2")}
+                    </span>
+                  </div>
+                  <h3 className="text-3xl font-bold text-white">Osaka</h3>
+                  <div className="mt-2 flex items-center justify-between">
+                    <p className="text-sm font-medium text-white/90">
+                      {t("osakaDesc")}
+                    </p>
+                    <button className="flex size-10 items-center justify-center rounded-full bg-white text-primary transition-transform group-hover:scale-110">
+                      <span className="material-symbols-outlined">
+                        arrow_forward
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </Link>
+            </>
+          )}
         </div>
       </section>
 
       {/* Section 2: Day Trips */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 bg-white rounded-3xl my-8">
+      <section
+        id="day-trips"
+        className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 bg-white rounded-3xl my-8"
+      >
         <div className="mb-8 text-center">
           <span className="text-primary font-bold tracking-wider uppercase text-sm">
             {t("escapeRush")}
@@ -310,7 +423,10 @@ export default function HomeContent() {
       </section>
 
       {/* Section 3: Curated Itineraries */}
-      <section className="mx-auto mb-20 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section
+        id="itineraries"
+        className="mx-auto mb-20 w-full max-w-7xl px-4 sm:px-6 lg:px-8"
+      >
         <h2 className="mb-6 text-2xl font-bold text-[#1b0d12]">
           {t("curatedTitle")}
         </h2>

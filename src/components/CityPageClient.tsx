@@ -10,6 +10,7 @@ import { useSavedPlaces } from "@/context/SavedPlacesContext";
 import { ItineraryProvider } from "@/context/ItineraryContext";
 import ItineraryPlanner from "./ItineraryPlanner";
 import { useLanguage } from "@/context/LanguageContext";
+import { useUser } from "@/context/UserContext";
 
 const MapMap = dynamic(() => import("./MapMap"), {
   ssr: false,
@@ -44,9 +45,19 @@ export default function CityPageClient({
   const [searchQuery, setSearchQuery] = useState("");
   const { isSaved } = useSavedPlaces();
   const { t } = useLanguage();
+  const { user, locations: userLocations } = useUser();
+
+  const finalLocations = useMemo(() => {
+    if (user && userLocations.length > 0) {
+      return userLocations.filter(
+        (l) => l.city?.toLowerCase() === cityName.toLowerCase()
+      );
+    }
+    return locations;
+  }, [user, userLocations, locations, cityName]);
 
   const filteredLocations = useMemo(() => {
-    let result = [...locations];
+    let result = [...finalLocations];
 
     // Filter by Search Query
     if (searchQuery.trim()) {
@@ -93,7 +104,7 @@ export default function CityPageClient({
     }
 
     return result;
-  }, [locations, activeFilter, isSaved, searchQuery]);
+  }, [finalLocations, activeFilter, isSaved, searchQuery]);
 
   const [nearestStation, setNearestStation] = useState<{
     lat: number;
@@ -118,8 +129,12 @@ export default function CityPageClient({
     }
 
     // 2. Fallback to first regular location if filtered is empty but main list exists
-    if (locations.length > 0 && locations[0].lat && locations[0].lng) {
-      return [locations[0].lat, locations[0].lng];
+    if (
+      finalLocations.length > 0 &&
+      finalLocations[0].lat &&
+      finalLocations[0].lng
+    ) {
+      return [finalLocations[0].lat, finalLocations[0].lng];
     }
 
     // 3. Absolute Fallbacks for specific cities if data is missing
@@ -129,7 +144,7 @@ export default function CityPageClient({
 
     // 4. Tokyo default
     return [35.6895, 139.6917];
-  }, [filteredLocations, locations, cityName]);
+  }, [filteredLocations, finalLocations, cityName]);
 
   const [showTransit, setShowTransit] = useState(false);
   const [activeTab, setActiveTab] = useState<"explore" | "planner">("explore");
@@ -292,7 +307,7 @@ export default function CityPageClient({
                     />
                   </>
                 ) : (
-                  <ItineraryPlanner locations={locations} />
+                  <ItineraryPlanner locations={finalLocations} />
                 )}
               </div>
             </div>

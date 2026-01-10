@@ -54,7 +54,7 @@ export default function LocationList({
             {/* Image */}
             <div className="relative h-48 w-full overflow-hidden">
               <img
-                src={getImage(loc.type)}
+                src={loc.photoUrl || getImage(loc.type)}
                 alt={loc.name}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />

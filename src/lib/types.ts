@@ -23,3 +23,15 @@ export interface CityInfo {
   image: string; // placeholder path
   locations: Location[];
 }
+
+export interface Profile {
+  id: string;
+  email?: string;
+  full_name?: string;
+  avatar_url?: string;
+  spreadsheet_id?: string;
+  google_refresh_token?: string; // We likely won't return this to frontend for security, but good to know
+  updated_at?: string;
+  public_slug?: string | null;
+  is_public?: boolean;
+}

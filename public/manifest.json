@@ -1,0 +1,16 @@
+{
+  "name": "Japan Trip Planner",
+  "short_name": "JP Planner",
+  "description": "Your personalized guide to the best eats, sights, and hidden gems in Japan.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fcf8f9",
+  "theme_color": "#e91e63",
+  "icons": [
+    {
+      "src": "/globe.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -162,13 +162,16 @@ export default function MapMap({
           }
 
           // 2. Hybrid Fallback: Click on "Dead" Transit Icon -> Search Nearby
-          // If no placeId, check if we clicked near a transit station
+          // If no placeId, check if we clicked near a transit/train station
           if (map && e.latLng && onPoiClick) {
+            // Prevent other click handlers (like map click) if we find something?
+            // Actually we are inside standard click.
+
             const service = new window.google.maps.places.PlacesService(map);
             const request = {
               location: e.latLng,
-              radius: 50, // Small radius to detect if user clicked "on" a station
-              type: "transit_station", // Look specifically for transit
+              radius: 100, // Increased radius
+              type: "transit_station",
             };
 
             service.nearbySearch(request, (results, status) => {
@@ -177,9 +180,8 @@ export default function MapMap({
                 results &&
                 results.length > 0
               ) {
-                // Found a station near the click! Use the closest one.
+                // Return the closest result
                 const station = results[0];
-                console.log("Hybrid Click Detected Station:", station);
 
                 onPoiClick({
                   id: `transit-${station.place_id}`,
