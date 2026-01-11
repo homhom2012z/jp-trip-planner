@@ -1,11 +1,10 @@
-"use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { User } from "@supabase/supabase-js";
 import { Profile } from "@/lib/types";
 import { api } from "@/services/api";
 import toast from "react-hot-toast";
 import { X, Copy, Share2, Users, Trash2, Mail } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -24,6 +23,7 @@ export default function ShareModal({
   onProfileUpdate,
   isOwner,
 }: ShareModalProps) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<"link" | "collaborators">("link");
   const [loading, setLoading] = useState(false);
 
@@ -57,7 +57,7 @@ export default function ShareModal({
     if (!profile.public_slug) return;
     const link = `${window.location.origin}/share/${profile.public_slug}`;
     await navigator.clipboard.writeText(link);
-    toast.success("Link copied!");
+    toast.success(t("linkCopied"));
   };
 
   const handleEnableShare = async () => {
@@ -107,7 +107,7 @@ export default function ShareModal({
     setLoading(true);
     try {
       await api.inviteCollaborator(profile.id, inviteEmail);
-      toast.success(`Invited ${inviteEmail}`);
+      toast.success(`${t("invited")} ${inviteEmail}`);
       setInviteEmail("");
       fetchCollaborators();
     } catch (e: any) {
@@ -123,7 +123,7 @@ export default function ShareModal({
     if (!confirm(`Remove ${email}?`)) return;
     try {
       await api.removeCollaborator(profile.id, email);
-      toast.success("Removed");
+      toast.success(t("removed"));
       fetchCollaborators();
     } catch (e) {
       toast.error("Failed to remove");
@@ -139,7 +139,7 @@ export default function ShareModal({
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-lg font-bold flex items-center gap-2">
             <Share2 className="w-5 h-5 text-primary" />
-            Share Trip
+            {t("shareTrip")}
           </h2>
           <button
             onClick={onClose}
@@ -159,7 +159,7 @@ export default function ShareModal({
                 : "border-transparent text-gray-500 hover:bg-gray-50"
             }`}
           >
-            Public Link
+            {t("publicLink")}
           </button>
           {isOwner && (
             <button
@@ -170,7 +170,7 @@ export default function ShareModal({
                   : "border-transparent text-gray-500 hover:bg-gray-50"
               }`}
             >
-              Collaborators
+              {t("collaborators")}
             </button>
           )}
         </div>
@@ -180,8 +180,7 @@ export default function ShareModal({
           {activeTab === "link" ? (
             <div className="space-y-6 animate-in slide-in-from-left-4 fade-in duration-300">
               <div className="bg-blue-50 p-4 rounded-xl text-sm text-blue-800 border border-blue-100">
-                Anyone with the link can view your itinerary. They cannot make
-                changes.
+                {t("publicLinkDesc")}
               </div>
 
               {!profile.public_slug ? (
@@ -189,23 +188,23 @@ export default function ShareModal({
                   <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
                     <Share2 className="w-6 h-6" />
                   </div>
-                  <h3 className="font-semibold mb-1">Make your trip public</h3>
+                  <h3 className="font-semibold mb-1">{t("makePublic")}</h3>
                   <p className="text-gray-500 text-sm mb-6">
-                    Create a link to share with friends and family.
+                    {t("makePublicDesc")}
                   </p>
                   <button
                     onClick={handleEnableShare}
                     disabled={loading}
                     className="bg-gray-900 text-white px-6 py-2 rounded-lg font-medium hover:bg-black transition-colors disabled:opacity-50"
                   >
-                    {loading ? "Generating..." : "Generate Link"}
+                    {loading ? t("generating") : t("generateLink")}
                   </button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Public Link
+                      {t("publicLink")}
                     </label>
                     <div className="flex gap-2">
                       <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 truncate font-mono">
@@ -221,13 +220,15 @@ export default function ShareModal({
                   </div>
 
                   <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
-                    <div className="text-sm text-gray-500">Link is active</div>
+                    <div className="text-sm text-gray-500">
+                      {t("linkActive")}
+                    </div>
                     <button
                       onClick={handleDisableShare}
                       disabled={loading}
                       className="text-red-600 text-sm font-medium hover:underline"
                     >
-                      Stop Sharing
+                      {t("stopSharing")}
                     </button>
                   </div>
                 </div>
@@ -236,8 +237,7 @@ export default function ShareModal({
           ) : (
             <div className="space-y-6 animate-in slide-in-from-right-4 fade-in duration-300">
               <div className="bg-purple-50 p-4 rounded-xl text-sm text-purple-800 border border-purple-100">
-                Collaborators can <strong>edit</strong> your trip. They must log
-                in with their Google account to access it.
+                {t("collabDesc")}
               </div>
 
               {/* Invite Form */}
@@ -258,23 +258,23 @@ export default function ShareModal({
                   disabled={loading}
                   className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
                 >
-                  Invite
+                  {t("invite")}
                 </button>
               </form>
 
               {/* List */}
               <div className="space-y-3">
                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Who has access
+                  {t("whoHasAccess")}
                 </label>
 
                 {loadingCollabs ? (
                   <div className="text-center py-4 text-gray-400 text-sm">
-                    Loading...
+                    {t("loading")}
                   </div>
                 ) : collaborators.length === 0 ? (
                   <div className="text-center py-4 border border-dashed border-gray-200 rounded-lg text-gray-400 text-sm">
-                    No collaborators yet
+                    {t("noCollaborators")}
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto">

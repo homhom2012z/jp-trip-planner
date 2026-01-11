@@ -2,6 +2,7 @@
 
 import { useUser } from "@/context/UserContext";
 import { useState } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function TripSwitcher({
   className = "",
@@ -9,6 +10,7 @@ export default function TripSwitcher({
   className?: string;
 }) {
   const { user, availableTrips, activeTripId, switchTrip } = useUser();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
   if (!user) {
@@ -26,13 +28,13 @@ export default function TripSwitcher({
   const getTripLabel = (trip: any) => {
     const isMine = trip.id === user.id;
     return isMine
-      ? "My Trip"
+      ? t("myTrip")
       : trip.full_name || trip.email
-      ? `${trip.full_name || trip.email}'s Trip`
-      : "Shared Trip";
+      ? `${trip.full_name || trip.email}${t("sTrip")}`
+      : t("sharedTrip");
   };
 
-  const currentLabel = activeTrip ? getTripLabel(activeTrip) : "My Trip";
+  const currentLabel = activeTrip ? getTripLabel(activeTrip) : t("myTrip");
 
   const handleSelect = (tripId: string) => {
     switchTrip(tripId);

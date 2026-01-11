@@ -23,6 +23,7 @@ import { useUser } from "@/context/UserContext";
 import { api } from "@/services/api";
 import toast from "react-hot-toast";
 import { Location } from "@/lib/types";
+import { useLanguage } from "@/context/LanguageContext";
 
 type ItineraryItem = {
   day: string;
@@ -106,6 +107,7 @@ function Column({
   onDelete,
 }: ColumnProps) {
   const { setNodeRef } = useSortable({ id });
+  const { t } = useLanguage();
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(title);
   const [searchQuery, setSearchQuery] = useState("");
@@ -165,7 +167,7 @@ function Column({
                 }`}
                 title={title !== "Unscheduled" ? "Click to rename" : ""}
               >
-                {title}
+                {title === "Unscheduled" ? t("unscheduled") : title}
               </span>
             )}
             <span className="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full flex-shrink-0">
@@ -180,9 +182,7 @@ function Column({
             <button
               onClick={() => {
                 if (
-                  window.confirm(
-                    `Delete "${title}"? Items will move to Unscheduled.`
-                  )
+                  window.confirm(t("deleteDayPrompt").replace("{name}", title))
                 ) {
                   onDelete(id);
                 }
@@ -204,7 +204,7 @@ function Column({
           </span>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder={t("searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-white border border-gray-200 rounded-lg py-1.5 pl-8 pr-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-gray-400"
@@ -241,7 +241,7 @@ function Column({
         </SortableContext>
         {filteredItems.length === 0 && (
           <div className="h-20 border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center text-gray-400 text-sm">
-            {searchQuery ? "No matches" : "Drop here"}
+            {searchQuery ? t("noMatches") : t("dropHere")}
           </div>
         )}
       </div>
@@ -251,6 +251,7 @@ function Column({
 
 export default function ItineraryBoard() {
   const { locations, activeTripId } = useUser();
+  const { t } = useLanguage();
   const [itinerary, setItinerary] = useState<ItineraryItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [days, setDays] = useState(["Unscheduled", "Day 1", "Day 2", "Day 3"]);
@@ -422,10 +423,10 @@ export default function ItineraryBoard() {
     try {
       await api.updateItinerary(activeTripId, finalState);
       setLastSaved(new Date());
-      toast.success("Itinerary saved!");
+      toast.success(t("itinerarySaved"));
     } catch (e) {
       console.error("Failed to save itinerary", e);
-      toast.error("Failed to save changes. Please try again.");
+      toast.error(t("saveFailed"));
       // Revert? (loadItinerary)
     } finally {
       setIsSaving(false);
@@ -438,7 +439,7 @@ export default function ItineraryBoard() {
   // Rename Day
   const handleRename = async (oldName: string, newName: string) => {
     if (days.includes(newName)) {
-      toast.error("Day name already exists!");
+      toast.error(t("dayNameExists"));
       return;
     }
 
@@ -457,10 +458,10 @@ export default function ItineraryBoard() {
     try {
       await api.updateItinerary(activeTripId, updatedItinerary);
       setLastSaved(new Date());
-      toast.success("Day renamed!");
+      toast.success(t("dayRenamed"));
     } catch (e) {
       console.error(e);
-      toast.error("Failed to rename day");
+      toast.error(t("failedToRename"));
     } finally {
       setIsSaving(false);
     }
@@ -483,10 +484,10 @@ export default function ItineraryBoard() {
     try {
       await api.updateItinerary(activeTripId, updatedItinerary);
       setLastSaved(new Date());
-      toast.success("Day deleted!");
+      toast.success(t("dayDeleted"));
     } catch (e) {
       console.error(e);
-      toast.error("Failed to delete day");
+      toast.error(t("failedToDelete"));
     } finally {
       setIsSaving(false);
     }
@@ -502,14 +503,18 @@ export default function ItineraryBoard() {
       <div className="flex flex-col h-full">
         <div className="flex justify-between items-center mb-4 px-1">
           <div className="flex items-baseline gap-4">
-            <h2 className="text-xl font-bold text-gray-800">Trip Itinerary</h2>
+            <h2 className="text-xl font-bold text-gray-800">
+              {t("tripItinerary")}
+            </h2>
             <div className="text-xs text-gray-500">
               {isSaving ? (
-                <span className="text-blue-600 font-medium">Saving...</span>
+                <span className="text-blue-600 font-medium">{t("saving")}</span>
               ) : lastSaved ? (
-                <span>Saved {lastSaved.toLocaleTimeString()}</span>
+                <span>
+                  {t("savedAt")} {lastSaved.toLocaleTimeString()}
+                </span>
               ) : (
-                <span>Auto-saves on change</span>
+                <span>{t("autoSave")}</span>
               )}
             </div>
           </div>
@@ -517,7 +522,7 @@ export default function ItineraryBoard() {
             onClick={addDay}
             className="text-sm bg-white border border-gray-300 px-3 py-1 rounded hover:bg-gray-50"
           >
-            + Add Day
+            {t("addDay")}
           </button>
         </div>
 

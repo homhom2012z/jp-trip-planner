@@ -383,7 +383,7 @@ export default function LocationDetailPanel({
                 </span>
               </div>
               <span className="text-xs text-[#1a73e8] font-medium">
-                Directions
+                {t("directions")}
               </span>
             </a>
 
@@ -418,7 +418,9 @@ export default function LocationDetailPanel({
                   share
                 </span>
               </div>
-              <span className="text-xs text-[#1a73e8] font-medium">Share</span>
+              <span className="text-xs text-[#1a73e8] font-medium">
+                {t("share")}
+              </span>
             </button>
           </div>
         </div>

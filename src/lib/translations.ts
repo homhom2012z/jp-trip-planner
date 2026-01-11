@@ -117,6 +117,50 @@ export const translations = {
     listView: "List",
     mapView: "Map",
     itineraryView: "Itinerary",
+
+    // Share Modal
+    shareTrip: "Share Trip",
+    publicLink: "Public Link",
+    collaborators: "Collaborators",
+    publicLinkDesc:
+      "Anyone with the link can view your itinerary. They cannot make changes.",
+    makePublic: "Make your trip public",
+    makePublicDesc: "Create a link to share with friends and family.",
+    generateLink: "Generate Link",
+    generating: "Generating...",
+    linkActive: "Link is active",
+    stopSharing: "Stop Sharing",
+    collabDesc:
+      "Collaborators can edit your trip. They must log in with their Google account to access it.",
+    invite: "Invite",
+    whoHasAccess: "Who has access",
+    noCollaborators: "No collaborators yet",
+    loading: "Loading...",
+    linkCopied: "Link copied!",
+    invited: "Invited",
+    removed: "Removed",
+
+    // Itinerary Board
+    tripItinerary: "Trip Itinerary",
+    addDay: "+ Add Day",
+    saving: "Saving...",
+    savedAt: "Saved",
+    autoSave: "Auto-saves on change",
+    noMatches: "No matches",
+    dropHere: "Drop here",
+    deleteDayPrompt: 'Delete "{name}"? Items will move to Unscheduled.',
+    dayRenamed: "Day renamed!",
+    dayDeleted: "Day deleted!",
+    itinerarySaved: "Itinerary saved!",
+    saveFailed: "Failed to save changes. Please try again.",
+    dayNameExists: "Day name already exists!",
+    failedToRename: "Failed to rename day",
+    failedToDelete: "Failed to delete day",
+    // Trip Switcher & Profile
+    sharedTrip: "Shared Trip",
+    sTrip: "'s Trip",
+    signOut: "Sign Out",
+    goToDashboard: "Go to Dashboard",
   },
   th: {
     // Header
@@ -232,5 +276,49 @@ export const translations = {
     listView: "รายการ",
     mapView: "แผนที่",
     itineraryView: "ตารางเที่ยว",
+
+    // Share Modal
+    shareTrip: "แชร์ทริป",
+    publicLink: "ลิงก์สาธารณะ",
+    collaborators: "ผู้ร่วมทริป",
+    publicLinkDesc:
+      "ทุกคนที่มีลิงก์สามารถดูแผนการเดินทางของคุณได้ แต่ไม่สามารถแก้ไขได้",
+    makePublic: "ทำให้ทริปเป็นสาธารณะ",
+    makePublicDesc: "สร้างลิงก์เพื่อแชร์กับเพื่อนและครอบครัว",
+    generateLink: "สร้างลิงก์",
+    generating: "กำลังสร้าง...",
+    linkActive: "ลิงก์ใช้งานได้แล้ว",
+    stopSharing: "หยุดแชร์",
+    collabDesc:
+      "ผู้ร่วมทริปสามารถแก้ไขทริปของคุณได้ พวกเขาต้องเข้าสู่ระบบด้วยบัญชี Google เพื่อเข้าถึง",
+    invite: "เชิญ",
+    whoHasAccess: "ใครเข้าถึงได้บ้าง",
+    noCollaborators: "ยังไม่มีผู้ร่วมทริป",
+    loading: "กำลังโหลด...",
+    linkCopied: "คัดลอกลิงก์แล้ว!",
+    invited: "เชิญแล้ว",
+    removed: "ลบแล้ว",
+
+    // Itinerary Board
+    tripItinerary: "แผนการเดินทาง",
+    addDay: "+ เพิ่มวัน",
+    saving: "กำลังบันทึก...",
+    savedAt: "บันทึกเมื่อ",
+    autoSave: "บันทึกอัตโนมัติ",
+    noMatches: "ไม่พบผลลัพธ์",
+    dropHere: "วางที่นี่",
+    deleteDayPrompt: 'ลบ "{name}"? รายการจะถูกย้ายไปที่ยังไม่ได้จัดตาราง',
+    dayRenamed: "เปลี่ยนชื่อวันแล้ว!",
+    dayDeleted: "ลบวันแล้ว!",
+    itinerarySaved: "บันทึกแผนการเดินทางแล้ว!",
+    saveFailed: "บันทึกไม่สำเร็จ กรุณาลองใหม่",
+    dayNameExists: "ชื่อวันนี้มีอยู่แล้ว!",
+    failedToRename: "เปลี่ยนชื่อวันไม่สำเร็จ",
+    failedToDelete: "ลบวันไม่สำเร็จ",
+    // Trip Switcher & Profile
+    sharedTrip: "ทริปที่ถูกแชร์",
+    sTrip: " ของ", // In Thai we might structure differently, but simple suffix: "Trip of [Name]" -> "[Name]'s Trip" ~ "ทริปของ [Name]"
+    signOut: "ออกจากระบบ",
+    goToDashboard: "ไปที่แดชบอร์ด",
   },
 };

@@ -4,10 +4,12 @@ import { useUser } from "@/context/UserContext";
 import { api } from "@/services/api";
 import Link from "next/link";
 import { useSync } from "@/hooks/useSync";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function ProfileMenu() {
   const { user, profile, logout } = useUser();
   const { isSyncing, handleSync } = useSync();
+  const { t } = useLanguage();
 
   if (!user) return null;
 
@@ -36,7 +38,7 @@ export default function ProfileMenu() {
               onClick={handleConnect}
               className="bg-green-600 text-white px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-green-700 transition"
             >
-              Connect Sheet
+              {t("connectSheet")}
             </button>
           )}
 
@@ -56,7 +58,7 @@ export default function ProfileMenu() {
                 refresh
               </span>
               <span className="hidden sm:inline">
-                {isSyncing ? "Syncing..." : "Sync"}
+                {isSyncing ? t("syncing") : t("syncNow")}
               </span>
             </button>
           )}
@@ -66,7 +68,7 @@ export default function ProfileMenu() {
       <Link
         href="/dashboard"
         className="text-gray-700 hover:text-primary px-2 py-1 flex items-center gap-1"
-        title="Go to Dashboard"
+        title={t("goToDashboard")}
       >
         <span className="material-symbols-outlined text-xl">dashboard</span>
       </Link>
@@ -75,7 +77,7 @@ export default function ProfileMenu() {
       <button
         onClick={logout}
         className="text-gray-500 hover:text-red-600 px-2 py-1"
-        title="Sign Out"
+        title={t("signOut")}
       >
         <span className="material-symbols-outlined text-xl">logout</span>
       </button>
