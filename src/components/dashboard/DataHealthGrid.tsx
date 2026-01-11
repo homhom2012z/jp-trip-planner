@@ -113,18 +113,18 @@ export default function DataHealthGrid() {
           </div>
         </div>
 
-        {/* DESKTOP TABLE VIEW */}
-        <div className="hidden md:block overflow-x-auto overflow-y-auto max-h-[70vh]">
+        {/* UNIFIED SCROLLABLE TABLE VIEW (Mobile + Desktop) */}
+        <div className="overflow-x-auto overflow-y-auto max-h-[70vh]">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 w-1/3">Name</th>
-                <th className="px-4 py-3">City</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Price</th>
-                <th className="px-4 py-3 text-center">Coords</th>
-                <th className="px-4 py-3 text-center">Photo</th>
+                <th className="px-4 py-3 whitespace-nowrap">Status</th>
+                <th className="px-4 py-3 w-1/3 min-w-[200px]">Name</th>
+                <th className="px-4 py-3 min-w-[120px]">City</th>
+                <th className="px-4 py-3 min-w-[120px]">Type</th>
+                <th className="px-4 py-3 min-w-[100px]">Price</th>
+                <th className="px-4 py-3 text-center min-w-[140px]">Coords</th>
+                <th className="px-4 py-3 text-center min-w-[80px]">Photo</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -251,7 +251,7 @@ export default function DataHealthGrid() {
 
                     <td className="px-4 py-3 text-center">
                       {hasCoords ? (
-                        <span className="text-xs font-mono text-gray-500">
+                        <span className="text-xs font-mono text-gray-500 whitespace-nowrap">
                           {loc.lat?.toFixed(3)}, {loc.lng?.toFixed(3)}
                         </span>
                       ) : (
@@ -300,76 +300,6 @@ export default function DataHealthGrid() {
               })}
             </tbody>
           </table>
-        </div>
-
-        {/* MOBILE CARD VIEW */}
-        <div className="block md:hidden divide-y divide-gray-100 overflow-y-auto max-h-[65vh]">
-          {filteredAndSortedLocations.map((loc) => {
-            const hasCoords = loc.lat !== 0 && loc.lng !== 0 && !!loc.lat;
-            const hasPhoto = !!loc.photoUrl;
-            const isHealthy = hasCoords && hasPhoto;
-
-            return (
-              <div key={loc.id} className="p-4 bg-white">
-                <div className="flex items-start gap-4">
-                  {/* Photo or Placeholder */}
-                  <div
-                    className="w-16 h-16 rounded-lg bg-gray-100 flex-shrink-0 flex items-center justify-center cursor-pointer overflow-hidden border border-gray-200"
-                    onClick={() =>
-                      hasPhoto &&
-                      setPreviewLoc({ url: loc.photoUrl!, name: loc.name })
-                    }
-                  >
-                    {hasPhoto ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={loc.photoUrl}
-                        alt={loc.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="material-symbols-outlined text-gray-300">
-                        image
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                      <h3
-                        onClick={() => handleEdit(loc.id, "name", loc.name)}
-                        className="font-semibold text-gray-900 truncate pr-2 cursor-pointer active:text-blue-600"
-                      >
-                        {editingId === loc.id && editField === "name"
-                          ? "..."
-                          : loc.name}
-                      </h3>
-                      {isHealthy ? (
-                        <span className="material-symbols-outlined text-green-500 text-[18px]">
-                          check_circle
-                        </span>
-                      ) : (
-                        <span className="material-symbols-outlined text-amber-500 text-[18px]">
-                          warning
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="text-sm text-gray-500 mt-0.5">
-                      {loc.city} • {loc.type} • {loc.priceJpy || "¥?"}
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-2">
-                      {/* Editing Hint */}
-                      <span className="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded">
-                        Tap cells on desktop to edit
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
 
