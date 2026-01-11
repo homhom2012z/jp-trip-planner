@@ -4,6 +4,8 @@ import { useSync } from "@/hooks/useSync";
 import ShareModal from "./ShareModal";
 import toast from "react-hot-toast";
 
+import { useLanguage } from "@/context/LanguageContext";
+
 interface DashboardHeroProps {
   currentView: "map" | "grid" | "itinerary";
   setView: (view: "map" | "grid" | "itinerary") => void;
@@ -15,6 +17,7 @@ export default function DashboardHero({
 }: DashboardHeroProps) {
   const { user, profile, locations, refreshProfile } = useUser();
   const { isSyncing, handleSync } = useSync();
+  const { t } = useLanguage();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   const cityCount = new Set(locations.map((l) => l.city)).size;
@@ -53,8 +56,8 @@ export default function DashboardHero({
             </div>
             <span className="text-gray-200 text-sm font-medium bg-black/30 px-3 py-1 rounded-full backdrop-blur-sm">
               {isOwner
-                ? "My Trip"
-                : `Editing: ${profile.full_name || profile.email}`}
+                ? t("myTrip")
+                : `${t("editing")}: ${profile.full_name || profile.email}`}
             </span>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight leading-tight text-white drop-shadow-md">
@@ -63,12 +66,12 @@ export default function DashboardHero({
           <div className="flex flex-wrap items-center gap-y-3 gap-x-6 text-sm font-medium text-gray-300">
             <div className="flex items-center gap-2">
               <span className="text-white text-xl font-bold">{totalSpots}</span>
-              <span>Saved Places</span>
+              <span>{t("savedPlaces")}</span>
             </div>
             <div className="hidden sm:block w-px h-4 bg-gray-600" />
             <div className="flex items-center gap-2">
               <span className="text-white text-xl font-bold">{cityCount}</span>
-              <span>Cities</span>
+              <span>{t("cities")}</span>
             </div>
             <div className="hidden sm:block w-px h-4 bg-gray-600" />
             <div className="flex items-center gap-2">
@@ -79,7 +82,7 @@ export default function DashboardHero({
                     : "bg-red-500"
                 }`}
               />
-              <span>{isLinked ? "Sheet Connected" : "No Sheet"}</span>
+              <span>{isLinked ? t("sheetConnected") : t("noSheet")}</span>
             </div>
           </div>
         </div>
@@ -95,7 +98,7 @@ export default function DashboardHero({
               }`}
             >
               <span className="material-symbols-outlined text-[20px]">map</span>
-              Map
+              {t("mapView")}
             </button>
             <button
               onClick={() => setView("grid")}
@@ -108,7 +111,7 @@ export default function DashboardHero({
               <span className="material-symbols-outlined text-[20px]">
                 grid_view
               </span>
-              List
+              {t("listView")}
             </button>
             <button
               onClick={() => setView("itinerary")}
@@ -121,7 +124,7 @@ export default function DashboardHero({
               <span className="material-symbols-outlined text-[20px]">
                 calendar_month
               </span>
-              Itinerary
+              {t("itineraryView")}
             </button>
           </div>
         </div>
@@ -140,7 +143,7 @@ export default function DashboardHero({
               className="cursor-pointer flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg active:scale-95"
             >
               <span className="material-symbols-outlined">add_link</span>
-              Connect Sheet
+              {t("connectSheet")}
             </button>
           )}
 
@@ -158,7 +161,7 @@ export default function DashboardHero({
               >
                 refresh
               </span>
-              {isSyncing ? "Syncing..." : "Sync Now"}
+              {isSyncing ? t("syncing") : t("syncNow")}
             </button>
           )}
 

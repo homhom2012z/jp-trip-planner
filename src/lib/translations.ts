@@ -89,6 +89,34 @@ export const translations = {
     itin2Title: "The Old Capital Route",
     itin2Desc: "A journey through history visiting Kyoto, Nara, and Osaka.",
     viewItinerary: "View Itinerary",
+
+    // Dashboard & Sync (New)
+    savedPlaces: "Saved Places",
+    cities: "Cities",
+    sheetConnected: "Sheet Connected",
+    noSheet: "No Sheet",
+    syncNow: "Sync Now",
+    syncing: "Syncing...",
+    connectSheet: "Connect Sheet",
+    myTrip: "My Trip",
+    editing: "Editing",
+
+    // Data Health Grid (New)
+    status: "Status",
+    name: "Name",
+    city: "City",
+    type: "Type",
+    price: "Price",
+    coords: "Coords",
+    photo: "Photo",
+    missing: "MISSING",
+    tapToEdit: "Tap cells to edit",
+    noLocations: "No locations found. Connect your sheet or add some data!",
+    searchGrid: "Search by name, city, or type...",
+    items: "items",
+    listView: "List",
+    mapView: "Map",
+    itineraryView: "Itinerary",
   },
   th: {
     // Header
@@ -169,12 +197,40 @@ export const translations = {
     // Itineraries
     curatedTitle: "แผนการเดินทางแนะนำ",
     itin1Tag: "ยอดนิยม",
-    itin1Title: "7 วันในโตเกียว",
+    itin1Title: "7 Days in Tokyo",
     itin1Desc:
       "คู่มือที่ดีที่สุดสำหรับมือใหม่ ครอบคลุมชิบูย่า ชินจูกุ และอาซากุสะ",
     itin2Tag: "เส้นทางทองคำ",
-    itin2Title: "เส้นทางเมืองเก่า",
+    itin2Title: "The Old Capital Route",
     itin2Desc: "การเดินทางผ่านประวัติศาสตร์ เยือนเกียวโต นารา และโอซาก้า",
     viewItinerary: "ดูแผนการเดินทาง",
+
+    // Dashboard & Sync (New)
+    savedPlaces: "สถานที่ที่บันทึกไว้",
+    cities: "เมือง",
+    sheetConnected: "เชื่อมต่อ Google Sheet แล้ว",
+    noSheet: "ยังไม่เชื่อมต่อ",
+    syncNow: "ซิงค์ข้อมูล",
+    syncing: "กำลังซิงค์...",
+    connectSheet: "เชื่อมต่อ Sheet",
+    myTrip: "ทริปของฉัน",
+    editing: "กำลังแก้ไข",
+
+    // Data Health Grid (New)
+    status: "สถานะ",
+    name: "ชื่อ",
+    city: "เมือง",
+    type: "ประเภท",
+    price: "ราคา",
+    coords: "พิกัด",
+    photo: "รูปภาพ",
+    missing: "ข้อมูลไม่ครบ",
+    tapToEdit: "แตะเพื่อแก้ไข",
+    noLocations: "ไม่พบสถานที่ เชื่อมต่อ Sheet หรือเพิ่มข้อมูลเลย!",
+    searchGrid: "ค้นหาจากชื่อ, เมือง, หรือประเภท...",
+    items: "รายการ",
+    listView: "รายการ",
+    mapView: "แผนที่",
+    itineraryView: "ตารางเที่ยว",
   },
 };

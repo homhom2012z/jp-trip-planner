@@ -3,6 +3,7 @@
 import { useUser } from "@/context/UserContext";
 import { api } from "@/services/api";
 import { useState, useMemo } from "react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function DataHealthGrid() {
   const { locations, refreshLocations, activeTripId } = useUser();
@@ -40,6 +41,8 @@ export default function DataHealthGrid() {
     });
   }, [locations, searchQuery]);
 
+  const { t } = useLanguage();
+
   const handleEdit = (id: string, field: string, currentValue: string) => {
     setEditingId(id);
     setEditField(field);
@@ -76,7 +79,7 @@ export default function DataHealthGrid() {
   if (locations.length === 0) {
     return (
       <div className="p-8 text-center bg-white rounded-xl border border-dashed border-gray-300 text-gray-500">
-        No locations found. Connect your sheet or add some data!
+        {t("noLocations")}
       </div>
     );
   }
@@ -92,7 +95,7 @@ export default function DataHealthGrid() {
             </span>
             <input
               type="text"
-              placeholder="Search by name, city, or type..."
+              placeholder={t("searchGrid")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
@@ -109,7 +112,7 @@ export default function DataHealthGrid() {
             )}
           </div>
           <div className="text-xs font-medium text-gray-500">
-            {filteredAndSortedLocations.length} items
+            {filteredAndSortedLocations.length} {t("items")}
           </div>
         </div>
 
@@ -118,13 +121,17 @@ export default function DataHealthGrid() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <th className="px-4 py-3 whitespace-nowrap">Status</th>
-                <th className="px-4 py-3 w-1/3 min-w-[200px]">Name</th>
-                <th className="px-4 py-3 min-w-[120px]">City</th>
-                <th className="px-4 py-3 min-w-[120px]">Type</th>
-                <th className="px-4 py-3 min-w-[100px]">Price</th>
-                <th className="px-4 py-3 text-center min-w-[140px]">Coords</th>
-                <th className="px-4 py-3 text-center min-w-[80px]">Photo</th>
+                <th className="px-4 py-3 whitespace-nowrap">{t("status")}</th>
+                <th className="px-4 py-3 w-1/3 min-w-[200px]">{t("name")}</th>
+                <th className="px-4 py-3 min-w-[120px]">{t("city")}</th>
+                <th className="px-4 py-3 min-w-[120px]">{t("type")}</th>
+                <th className="px-4 py-3 min-w-[100px]">{t("price")}</th>
+                <th className="px-4 py-3 text-center min-w-[140px]">
+                  {t("coords")}
+                </th>
+                <th className="px-4 py-3 text-center min-w-[80px]">
+                  {t("photo")}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -257,7 +264,7 @@ export default function DataHealthGrid() {
                       ) : (
                         <div className="flex flex-col items-center">
                           <span className="inline-flex items-center gap-1 text-red-600 text-[10px] font-bold bg-red-50 px-2 py-0.5 rounded border border-red-100 mb-1">
-                            MISSING
+                            {t("missing")}
                           </span>
                         </div>
                       )}
