@@ -114,7 +114,7 @@ export default function DataHealthGrid() {
         </div>
 
         {/* DESKTOP TABLE VIEW */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className="hidden md:block overflow-x-auto overflow-y-auto max-h-[70vh]">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -303,7 +303,7 @@ export default function DataHealthGrid() {
         </div>
 
         {/* MOBILE CARD VIEW */}
-        <div className="block md:hidden divide-y divide-gray-100">
+        <div className="block md:hidden divide-y divide-gray-100 overflow-y-auto max-h-[65vh]">
           {filteredAndSortedLocations.map((loc) => {
             const hasCoords = loc.lat !== 0 && loc.lng !== 0 && !!loc.lat;
             const hasPhoto = !!loc.photoUrl;
