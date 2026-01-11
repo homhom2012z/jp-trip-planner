@@ -12,7 +12,12 @@ export function useSync() {
     try {
       await toast.promise(syncWithGoogle(), {
         loading: "Syncing with Google Sheets...",
-        success: "Sync complete! Data updated.",
+        success: (data: { remaining?: number }) => {
+          if (data?.remaining && data.remaining > 0) {
+            return `Synced batch! ${data.remaining} items left. Click Sync again.`;
+          }
+          return "Sync complete! All data updated.";
+        },
         error: (err: any) => {
           // Check for "Test User" restriction (403 invalid_grant or access_denied)
           if (
