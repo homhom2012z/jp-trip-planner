@@ -19,7 +19,7 @@ interface UserContextType {
   locations: Location[];
   refreshLocations: () => Promise<void>;
   refreshProfile: () => Promise<void>;
-  syncWithGoogle: () => Promise<void>;
+  syncWithGoogle: () => Promise<any>;
   login: () => Promise<void>;
   logout: () => Promise<void>;
 
@@ -197,9 +197,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const syncWithGoogle = async () => {
     if (!activeTripId) return;
     try {
-      await api.syncLocations(activeTripId);
+      const result = await api.syncLocations(activeTripId);
       await loadLocations(activeTripId);
       await loadProfile(activeTripId);
+      return result;
     } catch (err) {
       console.error("Failed to sync:", err);
       throw err;
