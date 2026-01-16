@@ -43,24 +43,34 @@ export default function ProfileMenu() {
           )}
 
           {isLinked && (
-            <button
-              onClick={handleSync}
-              disabled={isSyncing}
-              className={`flex items-center gap-1 bg-white border border-gray-300 px-3 py-1.5 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-50 transition ${
-                isSyncing ? "opacity-50 cursor-wait" : ""
-              }`}
-            >
-              <span
-                className={`material-symbols-outlined text-[16px] ${
-                  isSyncing ? "animate-spin" : ""
+            <>
+              <button
+                onClick={handleSync}
+                disabled={isSyncing}
+                className={`flex items-center gap-1 bg-white border border-gray-300 px-3 py-1.5 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-50 transition ${
+                  isSyncing ? "opacity-50 cursor-wait" : ""
                 }`}
               >
-                refresh
-              </span>
-              <span className="hidden sm:inline">
-                {isSyncing ? t("syncing") : t("syncNow")}
-              </span>
-            </button>
+                <span
+                  className={`material-symbols-outlined text-[16px] ${
+                    isSyncing ? "animate-spin" : ""
+                  }`}
+                >
+                  refresh
+                </span>
+                <span className="hidden sm:inline">
+                  {isSyncing ? t("syncing") : t("syncNow")}
+                </span>
+              </button>
+
+              <button
+                onClick={handleConnect}
+                className="bg-gray-100 text-gray-600 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-200 transition"
+                title="Refresh Google Connection"
+              >
+                {t("reconnectSheet")}
+              </button>
+            </>
           )}
         </>
       )}

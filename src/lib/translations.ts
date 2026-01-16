@@ -98,7 +98,9 @@ export const translations = {
     syncNow: "Sync Now",
     syncing: "Syncing...",
     connectSheet: "Connect Sheet",
+    reconnectSheet: "Reconnect",
     myTrip: "My Trip",
+
     editing: "Editing",
 
     // Data Health Grid (New)
@@ -257,7 +259,9 @@ export const translations = {
     syncNow: "ซิงค์ข้อมูล",
     syncing: "กำลังซิงค์...",
     connectSheet: "เชื่อมต่อ Sheet",
+    reconnectSheet: "เชื่อมต่อใหม่",
     myTrip: "ทริปของฉัน",
+
     editing: "กำลังแก้ไข",
 
     // Data Health Grid (New)
