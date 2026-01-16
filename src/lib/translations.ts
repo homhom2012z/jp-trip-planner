@@ -101,6 +101,8 @@ export const translations = {
     reconnectSheet: "Reconnect",
     disconnectSheet: "Disconnect",
     myTrip: "My Trip",
+    failedToDisconnect: "Failed to disconnect",
+    addPlace: "Add Place",
 
     editing: "Editing",
 
@@ -263,6 +265,8 @@ export const translations = {
     reconnectSheet: "เชื่อมต่อใหม่",
     disconnectSheet: "ยกเลิกเชื่อมต่อ",
     myTrip: "ทริปของฉัน",
+    failedToDisconnect: "ยกเลิกการเชื่อมต่อไม่สำเร็จ",
+    addPlace: "เพิ่มสถานที่",
 
     editing: "กำลังแก้ไข",
 

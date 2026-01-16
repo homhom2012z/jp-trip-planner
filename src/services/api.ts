@@ -117,6 +117,39 @@ export const api = {
     return response.data;
   },
 
+  previewLocation: async (name: string, city: string) => {
+    const headers = await getAuthHeader();
+    const response = await axios.post(
+      `${API_URL}/api/locations/preview`,
+      { name, city },
+      { headers }
+    );
+    return response.data;
+  },
+
+  addLocation: async (
+    name: string,
+    city: string,
+    previewData: any,
+    ownerId?: string
+  ) => {
+    const headers = await getAuthHeader();
+    // If ownerId is provided, use it (for owner actions).
+    // The backend `validateAccess` likely uses `req.targetOwnerId`.
+    // If we are the owner, we pass our ID.
+    const body: any = { name, city, previewData };
+    if (ownerId) body.ownerId = ownerId; // Backend expects targetOwnerId if different? Or maybe just ownerId.
+
+    // In locations.routes.ts: `validateAccess` is used.
+    // Usually it checks req.body.ownerId or req.query.ownerId.
+    // We'll pass it in body to be safe.
+
+    const response = await axios.post(`${API_URL}/api/locations/add`, body, {
+      headers,
+    });
+    return response.data;
+  },
+
   // Collaborators
   listCollaborators: async (ownerId: string) => {
     const headers = await getAuthHeader();

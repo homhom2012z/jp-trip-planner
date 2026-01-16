@@ -2,6 +2,7 @@ import { useUser } from "@/context/UserContext";
 import { useState } from "react";
 import { useSync } from "@/hooks/useSync";
 import ShareModal from "./ShareModal";
+import AddLocationModal from "./AddLocationModal";
 import toast from "react-hot-toast";
 import { api } from "@/services/api";
 
@@ -20,6 +21,7 @@ export default function DashboardHero({
   const { isSyncing, handleSync } = useSync();
   const { t } = useLanguage();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
 
   const cityCount = new Set(locations.map((l) => l.city)).size;
   const totalSpots = locations.length;
@@ -38,6 +40,13 @@ export default function DashboardHero({
         user={user}
         onProfileUpdate={refreshProfile}
         isOwner={isOwner}
+      />
+      <AddLocationModal
+        isOpen={isAddLocationModalOpen}
+        onClose={() => setIsAddLocationModalOpen(false)}
+        onSuccess={() => {
+          handleSync(); // Auto-sync after adding
+        }}
       />
 
       {/* Background Pattern or Image */}
@@ -132,6 +141,19 @@ export default function DashboardHero({
 
         {/* Action Buttons: Always visible if valid user */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto mt-4 sm:mt-0">
+          {/* Add Location Button - Primary Action if Linked */}
+          {isLinked && isOwner && (
+            <button
+              onClick={() => setIsAddLocationModalOpen(true)}
+              className="flex-1 whitespace-nowrap flex items-center justify-center gap-2 bg-[#202124] hover:bg-black text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg active:scale-95 border border-white/20"
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                add_location
+              </span>
+              Add Place
+            </button>
+          )}
+
           {/* Connect Sheet Button - Show if NOT linked */}
           {!isLinked && isOwner && (
             <button
@@ -199,8 +221,9 @@ export default function DashboardHero({
                   await api.disconnectSheet(profile.id);
                   toast.success("Disconnected");
                   window.location.reload();
-                } catch (e) {
-                  toast.error("Failed");
+                } catch {
+                  toast.error(t("failedToDisconnect"));
+                } finally {
                 }
               }}
               className="flex items-center justify-center w-11 h-11 rounded-xl bg-red-900/50 hover:bg-red-900/80 text-red-200 hover:text-white transition-all shadow-lg border border-red-500/30"
