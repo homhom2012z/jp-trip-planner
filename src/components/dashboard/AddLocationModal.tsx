@@ -88,7 +88,7 @@ export default function AddLocationModal({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Starbucks at Shibuya Crossing"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 bg-white"
                   autoFocus
                 />
               </div>
@@ -101,7 +101,7 @@ export default function AddLocationModal({
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="e.g. Tokyo"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 bg-white"
                 />
               </div>
             </div>

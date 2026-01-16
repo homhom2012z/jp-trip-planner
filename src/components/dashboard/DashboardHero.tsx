@@ -191,63 +191,66 @@ export default function DashboardHero({
             </button>
           )}
 
-          {/* Reconnect (Refresh Token) */}
-          {isLinked && isOwner && (
-            <button
-              onClick={async () => {
-                try {
-                  const url = await api.getGoogleAuthUrl();
-                  window.location.href = url;
-                } catch (e) {
-                  console.error(e);
-                  toast.error("Failed to get auth url");
-                }
-              }}
-              className="flex items-center justify-center w-11 h-11 rounded-xl bg-gray-700 hover:bg-gray-600 text-white transition-all shadow-lg border border-white/10"
-              title={t("reconnectSheet")}
-            >
-              <span className="material-symbols-outlined text-[20px]">
-                sync_lock
-              </span>
-            </button>
-          )}
-
-          {/* Disconnect */}
-          {isLinked && isOwner && (
-            <button
-              onClick={async () => {
-                if (!confirm(t("disconnectSheet") + "?")) return;
-                try {
-                  await api.disconnectSheet(profile.id);
-                  toast.success("Disconnected");
-                  window.location.reload();
-                } catch {
-                  toast.error(t("failedToDisconnect"));
-                } finally {
-                }
-              }}
-              className="flex items-center justify-center w-11 h-11 rounded-xl bg-red-900/50 hover:bg-red-900/80 text-red-200 hover:text-white transition-all shadow-lg border border-red-500/30"
-              title={t("disconnectSheet")}
-            >
-              <span className="material-symbols-outlined text-[20px]">
-                link_off
-              </span>
-            </button>
-          )}
-
-          {/* Open Sheet - Only if Linked (Visible to Owner & Viewers) */}
+          {/* Group Icon Buttons for Mobile Row Layout */}
           {isLinked && (
-            <a
-              href={`https://docs.google.com/spreadsheets/d/${profile?.spreadsheet_id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center w-12 h-11 rounded-xl bg-gray-800 hover:bg-gray-700 text-white transition-all shadow-lg border border-white/10 text-gray-300 hover:text-white"
-              title="Open Google Sheet"
-            >
-              <span className="material-symbols-outlined text-[20px]">
-                open_in_new
-              </span>
-            </a>
+            <div className="flex flex-row items-center gap-3 justify-center">
+              {/* Reconnect (Refresh Token) */}
+              {isOwner && (
+                <button
+                  onClick={async () => {
+                    try {
+                      const url = await api.getGoogleAuthUrl();
+                      window.location.href = url;
+                    } catch (e) {
+                      console.error(e);
+                      toast.error("Failed to get auth url");
+                    }
+                  }}
+                  className="flex items-center justify-center w-11 h-11 rounded-xl bg-gray-700 hover:bg-gray-600 text-white transition-all shadow-lg border border-white/10"
+                  title={t("reconnectSheet")}
+                >
+                  <span className="material-symbols-outlined text-[20px]">
+                    sync_lock
+                  </span>
+                </button>
+              )}
+
+              {/* Disconnect */}
+              {isOwner && (
+                <button
+                  onClick={async () => {
+                    if (!confirm(t("disconnectSheet") + "?")) return;
+                    try {
+                      await api.disconnectSheet(profile.id);
+                      toast.success("Disconnected");
+                      window.location.reload();
+                    } catch {
+                      toast.error(t("failedToDisconnect"));
+                    } finally {
+                    }
+                  }}
+                  className="flex items-center justify-center w-11 h-11 rounded-xl bg-red-900/50 hover:bg-red-900/80 text-red-200 hover:text-white transition-all shadow-lg border border-red-500/30"
+                  title={t("disconnectSheet")}
+                >
+                  <span className="material-symbols-outlined text-[20px]">
+                    link_off
+                  </span>
+                </button>
+              )}
+
+              {/* Open Sheet - Only if Linked (Visible to Owner & Viewers) */}
+              <a
+                href={`https://docs.google.com/spreadsheets/d/${profile?.spreadsheet_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-12 h-11 rounded-xl bg-gray-800 hover:bg-gray-700 text-white transition-all shadow-lg border border-white/10 text-gray-300 hover:text-white"
+                title="Open Google Sheet"
+              >
+                <span className="material-symbols-outlined text-[20px]">
+                  open_in_new
+                </span>
+              </a>
+            </div>
           )}
 
           {/* Share Button - Always visible if Owner (or maybe even editors?) */}
