@@ -8,30 +8,35 @@ interface PageProps {
 
 export default async function CityPage({ params }: PageProps) {
   const { slug } = await params;
-  const cityName = slug.charAt(0).toUpperCase() + slug.slice(1); // Simple capitalization
+
+  // Decode URL (e.g. %E5%AE%87... -> 宇治市)
+  const decodedSlug = decodeURIComponent(slug);
+
+  // Capitalize first letter if it's english, or just use as is
+  const cityName = decodedSlug.charAt(0).toUpperCase() + decodedSlug.slice(1);
 
   // Fetch data
   const locations = await getLocationsByCity(cityName);
 
-  if (!locations || locations.length === 0) {
-    // If not found by exact slug matching city property in CSV, try loose match or 404
-    // Our CSV has "Kyoto", "Tokyo" etc. so slug "kyoto" works if logic is case-insensitive.
-    // data.ts getLocationsByCity is case-insensitive.
-    if (locations.length === 0) {
-      // For demo, if empty maybe strictly 404?
-      // Or allow rendering empty state.
-      // Let's 404 if truly invalid city in our logical set
-      const validCities = ["tokyo", "osaka", "kyoto", "uji", "kamakura"];
-      if (!validCities.includes(slug.toLowerCase())) {
-        notFound();
-      }
-    }
-  }
+  // If no locations found, we could show empty state or 404.
+  // Given we want to support any city that might be added,
+  // we should probably just render the page (CityPageClient handles empty states).
+  // But if absolutely 0 locations exist for this city in our DB,
+  // maybe 404 is appropriate if we want to avoid SEO spam?
+  // However, for user-added content, better to show "No spots yet".
+  // But the current implementation of getLocationsByCity might return empty.
+
+  // For now, let's ONLY 404 if it's clearly garbage?
+  // Actually, removing the hardcoded check means we accept anything.
+  // If getLocationsByCity returns [], CityPageClient will just show 0 spots.
 
   return <CityPageClient cityName={cityName} locations={locations} />;
 }
 
 export async function generateStaticParams() {
+  // We can't statically generate ALL possible user cities easily without fetching from DB.
+  // We can generate the popular ones we know.
+  // Others will be SSR/ISR on demand.
   return [
     { slug: "tokyo" },
     { slug: "osaka" },
