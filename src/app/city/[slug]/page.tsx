@@ -1,6 +1,5 @@
 import { getLocationsByCity } from "@/lib/data";
 import CityPageClient from "@/components/CityPageClient";
-import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
