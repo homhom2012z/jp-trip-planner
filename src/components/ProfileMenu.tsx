@@ -5,7 +5,6 @@ import { api } from "@/services/api";
 import Link from "next/link";
 import { useSync } from "@/hooks/useSync";
 import { useLanguage } from "@/context/LanguageContext";
-import toast from "react-hot-toast";
 
 export default function ProfileMenu() {
   const { user, profile, logout } = useUser();
@@ -24,8 +23,6 @@ export default function ProfileMenu() {
       console.error("Failed to get auth url", e);
     }
   };
-
-
 
   return (
     <div className="flex items-center gap-3">
@@ -65,8 +62,7 @@ export default function ProfileMenu() {
                   {isSyncing ? t("syncing") : t("syncNow")}
                 </span>
               </button>
-
-            </button>
+            </>
           )}
         </>
       )}
