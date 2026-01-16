@@ -117,11 +117,11 @@ export const api = {
     return response.data;
   },
 
-  previewLocation: async (name: string, city: string) => {
+  previewLocation: async (name?: string, city?: string, url?: string) => {
     const headers = await getAuthHeader();
     const response = await axios.post(
       `${API_URL}/api/locations/preview`,
-      { name, city },
+      { name, city, url },
       { headers }
     );
     return response.data;

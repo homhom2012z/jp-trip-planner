@@ -15,8 +15,10 @@ export default function AddLocationModal({
 }: Props) {
   // const { t } = useLanguage(); // Unused for now
   const [step, setStep] = useState<"input" | "preview">("input");
+  const [searchMode, setSearchMode] = useState<"name" | "link">("name");
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
+  const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [previewData, setPreviewData] = useState<any>(null);
@@ -24,17 +26,34 @@ export default function AddLocationModal({
   if (!isOpen) return null;
 
   const handlePreview = async () => {
-    if (!name || !city) {
+    if (searchMode === "name" && (!name || !city)) {
       toast.error("Please enter specific name and city");
       return;
     }
+    if (searchMode === "link" && !url) {
+      toast.error("Please paste a Google Maps link");
+      return;
+    }
+
     setLoading(true);
     try {
-      const data = await api.previewLocation(name, city);
+      let data;
+      if (searchMode === "link") {
+        data = await api.previewLocation(undefined, undefined, url);
+      } else {
+        data = await api.previewLocation(name, city);
+      }
+
       if (!data) {
         toast.error("Location not found");
       } else {
         setPreviewData(data);
+        if (searchMode === "link" && data.name) {
+          setName(data.name);
+          // City might not be in data, but we can leave it or try to parse?
+          // For now, let's leave city as is (user might need to fill it if we can't get it).
+          // Actually, `data` from backend only has `name` now.
+        }
         setStep("preview");
       }
     } catch {
@@ -79,31 +98,76 @@ export default function AddLocationModal({
         <div className="p-6 space-y-4">
           {step === "input" && (
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Location Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Starbucks at Shibuya Crossing"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 bg-white"
-                  autoFocus
-                />
+              {/* Tabs for Search Mode */}
+              <div className="flex p-1 bg-gray-100 rounded-xl mb-4">
+                <button
+                  onClick={() => setSearchMode("name")}
+                  className={`flex-1 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                    searchMode === "name"
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Search by Name
+                </button>
+                <button
+                  onClick={() => setSearchMode("link")}
+                  className={`flex-1 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                    searchMode === "link"
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Paste Google Maps Link
+                </button>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  City
-                </label>
-                <input
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="e.g. Tokyo"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 bg-white"
-                />
-              </div>
+
+              {searchMode === "name" ? (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Location Name
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="e.g. Starbucks at Shibuya Crossing"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 bg-white"
+                      autoFocus
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="e.g. Tokyo"
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 bg-white"
+                    />
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Google Maps Link
+                  </label>
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="Paste link here (e.g. maps.app.goo.gl/...)"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 bg-white"
+                    autoFocus
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Supports short links from the Google Maps app share button.
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -124,9 +188,11 @@ export default function AddLocationModal({
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-gray-900 truncate">{name}</h4>
+                  <h4 className="font-bold text-gray-900 truncate">
+                    {previewData.name || name}
+                  </h4>
                   <div className="text-sm text-gray-500 mb-2 truncate">
-                    {city}
+                    {city || "Japan"}
                   </div>
                   <div className="flex flex-wrap gap-2 text-xs">
                     {previewData.type && (
