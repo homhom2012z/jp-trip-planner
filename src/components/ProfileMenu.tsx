@@ -5,6 +5,7 @@ import { api } from "@/services/api";
 import Link from "next/link";
 import { useSync } from "@/hooks/useSync";
 import { useLanguage } from "@/context/LanguageContext";
+import toast from "react-hot-toast";
 
 export default function ProfileMenu() {
   const { user, profile, logout } = useUser();
@@ -21,6 +22,27 @@ export default function ProfileMenu() {
       window.location.href = url;
     } catch (e) {
       console.error("Failed to get auth url", e);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    if (
+      !confirm(
+        t("disconnectSheet") + "? " + (t("myTrip") === "ทริปของฉัน" ? "" : "") // Simple confirm
+      )
+    )
+      return;
+
+    try {
+      if (profile?.id) {
+        await api.disconnectSheet(profile.id);
+        toast.success(t("disconnectSheet") + " Success");
+        // Reload to refresh context
+        window.location.reload();
+      }
+    } catch (e) {
+      console.error("Failed to disconnect", e);
+      toast.error("Failed to disconnect");
     }
   };
 
@@ -69,6 +91,16 @@ export default function ProfileMenu() {
                 title="Refresh Google Connection"
               >
                 {t("reconnectSheet")}
+              </button>
+
+              <button
+                onClick={handleDisconnect}
+                className="bg-red-50 text-red-600 px-3 py-1.5 rounded-md text-xs font-semibold hover:bg-red-100 transition"
+                title={t("disconnectSheet")}
+              >
+                <span className="material-symbols-outlined text-[16px]">
+                  link_off
+                </span>
               </button>
             </>
           )}

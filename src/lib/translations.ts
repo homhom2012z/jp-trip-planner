@@ -99,6 +99,7 @@ export const translations = {
     syncing: "Syncing...",
     connectSheet: "Connect Sheet",
     reconnectSheet: "Reconnect",
+    disconnectSheet: "Disconnect",
     myTrip: "My Trip",
 
     editing: "Editing",
@@ -260,6 +261,7 @@ export const translations = {
     syncing: "กำลังซิงค์...",
     connectSheet: "เชื่อมต่อ Sheet",
     reconnectSheet: "เชื่อมต่อใหม่",
+    disconnectSheet: "ยกเลิกเชื่อมต่อ",
     myTrip: "ทริปของฉัน",
 
     editing: "กำลังแก้ไข",

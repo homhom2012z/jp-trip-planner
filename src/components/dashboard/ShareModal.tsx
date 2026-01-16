@@ -65,7 +65,7 @@ export default function ShareModal({
     try {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
-      const res = await fetch(`${apiUrl}/share/enable`, {
+      const res = await fetch(`${apiUrl}/api/share/enable`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ownerId: user.id }), // Only owner handles public link state for now
@@ -86,7 +86,7 @@ export default function ShareModal({
     try {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
-      const res = await fetch(`${apiUrl}/share/disable`, {
+      const res = await fetch(`${apiUrl}/api/share/disable`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ownerId: user.id }),
