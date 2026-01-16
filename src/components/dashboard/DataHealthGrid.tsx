@@ -132,6 +132,7 @@ export default function DataHealthGrid() {
                 <th className="px-4 py-3 text-center min-w-[80px]">
                   {t("photo")}
                 </th>
+                <th className="px-4 py-3 text-center min-w-[60px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -301,6 +302,32 @@ export default function DataHealthGrid() {
                       ) : (
                         <span className="text-amber-600 text-xs italic">-</span>
                       )}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (
+                            !confirm(
+                              `Are you sure you want to delete ${loc.name}?`
+                            )
+                          )
+                            return;
+                          try {
+                            await api.deleteLocation(loc.id);
+                            await refreshLocations();
+                          } catch (err) {
+                            console.error(err);
+                            alert("Failed to delete");
+                          }
+                        }}
+                        className="text-gray-400 hover:text-red-600 p-1.5 rounded-full hover:bg-red-50 transition-all"
+                        title="Delete Location"
+                      >
+                        <span className="material-symbols-outlined text-[20px]">
+                          delete
+                        </span>
+                      </button>
                     </td>
                   </tr>
                 );
