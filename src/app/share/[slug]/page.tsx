@@ -45,9 +45,8 @@ export default function SharedTripPage() {
   useEffect(() => {
     if (!slug) return;
 
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
-    fetch(`${apiUrl}/share/${slug}`)
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+    fetch(`${baseUrl}/api/share/${slug}`)
       .then((res) => {
         if (!res.ok) throw new Error("Trip not found");
         return res.json();
