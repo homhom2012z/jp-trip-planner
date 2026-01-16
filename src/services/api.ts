@@ -161,6 +161,21 @@ export const api = {
     return response.data;
   },
 
+  batchAddLocations: async (urls: string[], ownerId?: string) => {
+    const headers = await getAuthHeader();
+    const body: any = { urls };
+    if (ownerId) body.ownerId = ownerId;
+
+    const response = await axios.post(
+      `${API_URL}/api/locations/batch-add`,
+      body,
+      {
+        headers,
+      }
+    );
+    return response.data;
+  },
+
   // Collaborators
   listCollaborators: async (ownerId: string) => {
     const headers = await getAuthHeader();
