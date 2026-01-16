@@ -5,11 +5,13 @@ import { useSavedPlaces } from "@/context/SavedPlacesContext";
 interface LocationListProps {
   locations: Location[];
   onLocationClick?: (location: Location) => void;
+  onDelete?: (locationId: string) => void;
 }
 
 export default function LocationList({
   locations,
   onLocationClick,
+  onDelete,
 }: LocationListProps) {
   const { isSaved, toggleSaved } = useSavedPlaces();
 
@@ -77,6 +79,27 @@ export default function LocationList({
                   favorite
                 </span>
               </button>
+
+              {onDelete && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (
+                      window.confirm(
+                        `Are you sure you want to delete ${loc.name}?`
+                      )
+                    ) {
+                      onDelete(loc.id);
+                    }
+                  }}
+                  className="absolute top-3 left-3 p-2 rounded-full backdrop-blur-sm bg-white/90 text-gray-400 hover:text-red-600 hover:scale-110 transition-all shadow-sm z-10"
+                  title="Delete Location"
+                >
+                  <span className="material-symbols-outlined text-[20px] block">
+                    delete
+                  </span>
+                </button>
+              )}
               <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-white text-xs font-bold uppercase tracking-wider">
                 {getTypeLabel(loc.type)}
               </div>

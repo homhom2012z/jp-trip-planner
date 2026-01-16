@@ -304,6 +304,22 @@ export default function CityPageClient({
                         setNearestStation(null); // Reset station when changing selection
                         setShowMobileMap(true); // Auto-switch to map on mobile
                       }}
+                      onDelete={async (id) => {
+                        try {
+                          // Optimistic update logic if needed
+                          // But usually we wait for sync.
+                          // Trigger API
+                          await import("@/services/api").then((m) =>
+                            m.api.deleteLocation(id)
+                          );
+                          // Force refresh via window reload or sync hooks?
+                          // Simple reload for safety as IDs shift
+                          window.location.reload();
+                        } catch (e) {
+                          console.error("Delete failed", e);
+                          alert("Failed to delete location");
+                        }
+                      }}
                     />
                   </>
                 ) : (

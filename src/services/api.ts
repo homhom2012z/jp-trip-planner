@@ -127,6 +127,17 @@ export const api = {
     return response.data;
   },
 
+  deleteLocation: async (locationId: string, ownerId?: string) => {
+    const headers = await getAuthHeader();
+    const body: any = { locationId };
+    if (ownerId) body.ownerId = ownerId;
+
+    const response = await axios.post(`${API_URL}/api/locations/delete`, body, {
+      headers,
+    });
+    return response.data;
+  },
+
   addLocation: async (
     name: string,
     city: string,
