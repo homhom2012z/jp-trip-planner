@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useSync } from "@/hooks/useSync";
 import ShareModal from "./ShareModal";
 import toast from "react-hot-toast";
+import { api } from "@/services/api";
 
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -134,11 +135,14 @@ export default function DashboardHero({
           {/* Connect Sheet Button - Show if NOT linked */}
           {!isLinked && isOwner && (
             <button
-              onClick={() => {
-                toast.error(
-                  "Please configure your Google Sheet in settings first (not implemented yet, or use the main button)"
-                );
-                // For now, maybe just show a toast or a how-to
+              onClick={async () => {
+                try {
+                  const url = await api.getGoogleAuthUrl();
+                  window.location.href = url;
+                } catch (e) {
+                  console.error(e);
+                  toast.error("Failed to get auth url");
+                }
               }}
               className="cursor-pointer flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-lg active:scale-95"
             >
@@ -162,6 +166,49 @@ export default function DashboardHero({
                 refresh
               </span>
               {isSyncing ? t("syncing") : t("syncNow")}
+            </button>
+          )}
+
+          {/* Reconnect (Refresh Token) */}
+          {isLinked && isOwner && (
+            <button
+              onClick={async () => {
+                try {
+                  const url = await api.getGoogleAuthUrl();
+                  window.location.href = url;
+                } catch (e) {
+                  console.error(e);
+                  toast.error("Failed to get auth url");
+                }
+              }}
+              className="flex items-center justify-center w-11 h-11 rounded-xl bg-gray-700 hover:bg-gray-600 text-white transition-all shadow-lg border border-white/10"
+              title={t("reconnectSheet")}
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                sync_lock
+              </span>
+            </button>
+          )}
+
+          {/* Disconnect */}
+          {isLinked && isOwner && (
+            <button
+              onClick={async () => {
+                if (!confirm(t("disconnectSheet") + "?")) return;
+                try {
+                  await api.disconnectSheet(profile.id);
+                  toast.success("Disconnected");
+                  window.location.reload();
+                } catch (e) {
+                  toast.error("Failed");
+                }
+              }}
+              className="flex items-center justify-center w-11 h-11 rounded-xl bg-red-900/50 hover:bg-red-900/80 text-red-200 hover:text-white transition-all shadow-lg border border-red-500/30"
+              title={t("disconnectSheet")}
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                link_off
+              </span>
             </button>
           )}
 
