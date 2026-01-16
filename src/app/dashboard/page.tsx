@@ -29,7 +29,7 @@ const DangerZone = dynamic(() => import("@/components/dashboard/DangerZone"), {
 });
 
 export default function DashboardPage() {
-  const { user, loading } = useUser();
+  const { user, profile, loading } = useUser();
   const router = useRouter();
   const [currentView, setCurrentView] = useState<"map" | "grid" | "itinerary">(
     "map"
@@ -41,7 +41,10 @@ export default function DashboardPage() {
     }
   }, [user, loading, router]);
 
-  if (loading || !user) {
+  // Only show blocking loading screen if we don't have data yet.
+  // This prevents the dashboard from unmounting/remounting (and closing modals)
+  // when the user session refreshes in the background.
+  if (loading && (!user || !profile)) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-[#fcf8f9]">
         <span className="material-symbols-outlined animate-spin text-4xl text-gray-400">
@@ -50,6 +53,10 @@ export default function DashboardPage() {
       </div>
     );
   }
+
+  // If not loading and no user, the useEffect handles redirect.
+  // We return null here to avoid rendering protected content briefly.
+  if (!user || !profile) return null;
 
   return (
     <div className="min-h-screen bg-[#fcf8f9] pb-20">
