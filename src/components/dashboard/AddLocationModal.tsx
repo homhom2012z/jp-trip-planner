@@ -14,12 +14,21 @@ export default function AddLocationModal({
   onSuccess,
 }: Props) {
   // const { t } = useLanguage(); // Unused for now
-  const [step, setStep] = useState<"input" | "preview">("input");
-  const [searchMode, setSearchMode] = useState<"name" | "link">("name");
+  const [step, setStep] = useState<"input" | "preview" | "batch-result">(
+    "input"
+  );
+  const [searchMode, setSearchMode] = useState<"name" | "link" | "batch">(
+    "name"
+  );
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
   const [url, setUrl] = useState("");
+  const [batchUrls, setBatchUrls] = useState("");
   const [loading, setLoading] = useState(false);
+  const [batchResult, setBatchResult] = useState<{
+    added: number;
+    errors: any[];
+  } | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [previewData, setPreviewData] = useState<any>(null);
 
@@ -99,6 +108,7 @@ export default function AddLocationModal({
           {step === "input" && (
             <div className="space-y-4">
               {/* Tabs for Search Mode */}
+              {/* Tabs for Search Mode */}
               <div className="flex p-1 bg-gray-100 rounded-xl mb-4">
                 <button
                   onClick={() => setSearchMode("name")}
@@ -108,7 +118,7 @@ export default function AddLocationModal({
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  Search by Name
+                  Name
                 </button>
                 <button
                   onClick={() => setSearchMode("link")}
@@ -118,11 +128,21 @@ export default function AddLocationModal({
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  Paste Google Maps Link
+                  Link
+                </button>
+                <button
+                  onClick={() => setSearchMode("batch")}
+                  className={`flex-1 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                    searchMode === "batch"
+                      ? "bg-white text-gray-900 shadow-sm"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Batch
                 </button>
               </div>
 
-              {searchMode === "name" ? (
+              {searchMode === "name" && (
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -150,7 +170,9 @@ export default function AddLocationModal({
                     />
                   </div>
                 </>
-              ) : (
+              )}
+
+              {searchMode === "link" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Google Maps Link
@@ -165,6 +187,24 @@ export default function AddLocationModal({
                   />
                   <p className="text-xs text-gray-500 mt-2">
                     Supports short links from the Google Maps app share button.
+                  </p>
+                </div>
+              )}
+
+              {searchMode === "batch" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Batch Links (Max 20)
+                  </label>
+                  <textarea
+                    value={batchUrls}
+                    onChange={(e) => setBatchUrls(e.target.value)}
+                    placeholder={`https://maps.app.goo.gl/...\nhttps://maps.google.com/...`}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition text-gray-900 bg-white min-h-[150px] font-mono text-xs"
+                    autoFocus
+                  />
+                  <p className="text-xs text-gray-500 mt-2">
+                    Paste multiple links, one per line. Limit 20 at a time.
                   </p>
                 </div>
               )}
@@ -220,35 +260,102 @@ export default function AddLocationModal({
               </p>
             </div>
           )}
+
+          {step === "batch-result" && batchResult && (
+            <div className="space-y-4">
+              <div className="p-4 bg-green-50 text-green-800 rounded-lg border border-green-200">
+                <div className="font-bold flex items-center gap-2">
+                  <span className="material-symbols-outlined">
+                    check_circle
+                  </span>
+                  Success
+                </div>
+                <div className="text-sm mt-1">
+                  Added {batchResult.added} locations successfully.
+                </div>
+              </div>
+              {batchResult.errors.length > 0 && (
+                <div className="p-4 bg-red-50 text-red-800 rounded-lg border border-red-200 max-h-[150px] overflow-auto">
+                  <div className="font-bold text-sm mb-2">Failed URLs:</div>
+                  {batchResult.errors.map((err: any, i: number) => (
+                    <div key={i} className="text-xs font-mono mb-1 truncate">
+                      {err.url} ({err.error})
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="p-4 border-t border-gray-100 flex gap-3 text-right bg-white">
-          {step === "preview" && (
+          {(step === "preview" || step === "batch-result") && (
             <button
-              onClick={() => setStep("input")}
-              disabled={loading}
+              onClick={() => {
+                if (step === "batch-result") {
+                  onSuccess();
+                  onClose();
+                } else {
+                  setStep("input");
+                }
+              }}
+              disabled={loading && step !== "batch-result"}
               className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition"
             >
-              Back
+              {step === "batch-result" ? "Close" : "Back"}
             </button>
           )}
 
-          <button
-            onClick={step === "input" ? handlePreview : handleAdd}
-            disabled={loading}
-            className={`flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95 ${
-              loading
-                ? "bg-gray-400 cursor-wait"
-                : "bg-blue-600 hover:bg-blue-700"
-            }`}
-          >
-            {loading && (
-              <span className="material-symbols-outlined animate-spin text-lg">
-                refresh
-              </span>
-            )}
-            {step === "input" ? "Preview Location" : "Add to Trip"}
-          </button>
+          {step !== "batch-result" && (
+            <button
+              onClick={async () => {
+                if (step === "input") {
+                  if (searchMode === "batch") {
+                    if (!batchUrls.trim()) {
+                      toast.error("Please enter URLS");
+                      return;
+                    }
+                    const urls = batchUrls.split("\n").filter((u) => u.trim());
+                    if (urls.length === 0) return;
+
+                    setLoading(true);
+                    try {
+                      const res = await api.batchAddLocations(urls);
+                      setBatchResult(res);
+                      setStep("batch-result");
+                      toast.success(`Processed ${urls.length} links`);
+                    } catch (e) {
+                      toast.error("Batch failed");
+                      console.error(e);
+                    } finally {
+                      setLoading(false);
+                    }
+                  } else {
+                    handlePreview();
+                  }
+                } else {
+                  handleAdd();
+                }
+              }}
+              disabled={loading}
+              className={`flex-1 flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95 ${
+                loading
+                  ? "bg-gray-400 cursor-wait"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              {loading && (
+                <span className="material-symbols-outlined animate-spin text-lg">
+                  refresh
+                </span>
+              )}
+              {step === "input"
+                ? searchMode === "batch"
+                  ? "Process Batch"
+                  : "Preview Location"
+                : "Add to Trip"}
+            </button>
+          )}
         </div>
       </div>
     </div>
