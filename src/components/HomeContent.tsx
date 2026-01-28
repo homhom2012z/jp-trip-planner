@@ -39,23 +39,26 @@ export default function HomeContent() {
   };
 
   // Dynamic Cities Logic
-  const cities = locations.reduce((acc, loc) => {
-    if (!loc.city) return acc;
-    const city = loc.city.trim();
-    if (!acc[city]) {
-      acc[city] = {
-        name: city,
-        count: 0,
-        photoUrl: loc.photoUrl, // First photo found as fallback
-      };
-    }
-    acc[city].count += 1;
-    // Prefer photoUrl if missing
-    if (!acc[city].photoUrl && loc.photoUrl) {
-      acc[city].photoUrl = loc.photoUrl;
-    }
-    return acc;
-  }, {} as Record<string, { name: string; count: number; photoUrl?: string }>);
+  const cities = locations.reduce(
+    (acc, loc) => {
+      if (!loc.city) return acc;
+      const city = loc.city.trim();
+      if (!acc[city]) {
+        acc[city] = {
+          name: city,
+          count: 0,
+          photoUrl: loc.photoUrl, // First photo found as fallback
+        };
+      }
+      acc[city].count += 1;
+      // Prefer photoUrl if missing
+      if (!acc[city].photoUrl && loc.photoUrl) {
+        acc[city].photoUrl = loc.photoUrl;
+      }
+      return acc;
+    },
+    {} as Record<string, { name: string; count: number; photoUrl?: string }>,
+  );
 
   const cityList = Object.values(cities).sort((a, b) => b.count - a.count);
   const showDynamic = user && cityList.length > 0;
@@ -72,7 +75,7 @@ export default function HomeContent() {
       {/* Hero Section */}
       <section className="relative flex min-h-[560px] flex-col items-center justify-center overflow-hidden px-4 py-20 text-center text-white">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#fcf8f9] z-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-background z-10"></div>
           <img
             src={IMAGES.hero}
             alt="Mount Fuji with cherry blossoms"
@@ -98,21 +101,21 @@ export default function HomeContent() {
             onSubmit={handleSearch}
             className="mt-4 flex w-full max-w-lg flex-col sm:flex-row shadow-xl rounded-xl overflow-hidden"
           >
-            <div className="relative flex w-full flex-1 items-center bg-white">
+            <div className="relative flex w-full flex-1 items-center bg-surface">
               <span className="material-symbols-outlined absolute left-4 text-primary">
                 search
               </span>
               <input
                 type="text"
                 placeholder={t("searchPlaceholderHero")}
-                className="h-14 w-full border-none bg-transparent pl-12 pr-4 text-[#1b0d12] placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:ring-inset"
+                className="h-14 w-full border-none bg-transparent pl-12 pr-4 text-text-main placeholder:text-gray-400 focus:ring-2 focus:ring-primary focus:ring-inset"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <button
               type="submit"
-              className="h-14 w-full sm:w-auto bg-primary px-8 text-base font-bold text-white hover:bg-primary/90 transition-colors"
+              className="h-14 w-full sm:w-auto bg-primary px-8 text-base font-bold text-white hover:bg-primary-hover transition-colors"
             >
               {t("searchButton")}
             </button>
@@ -126,13 +129,13 @@ export default function HomeContent() {
         className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
       >
         <div className="flex flex-col gap-6">
-          <h2 className="text-2xl font-bold tracking-tight text-[#1b0d12]">
+          <h2 className="text-2xl font-bold tracking-tight text-text-main">
             {t("exploreCategory")}
           </h2>
           <div className="flex flex-wrap gap-3">
             <a
               href="#destinations"
-              className="group flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-white shadow-md shadow-primary/25 ring-2 ring-primary ring-offset-2 ring-offset-[#fcf8f9] transition-all"
+              className="group flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-sm font-bold text-white shadow-md shadow-primary/25 ring-2 ring-primary ring-offset-2 ring-offset-background transition-all"
             >
               <span className="material-symbols-outlined text-[18px]">
                 travel_explore
@@ -141,7 +144,7 @@ export default function HomeContent() {
             </a>
             <a
               href="#destinations"
-              className="group flex h-10 items-center gap-2 rounded-full bg-[#f3e7eb] px-5 text-sm font-medium text-[#1b0d12] hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200"
+              className="group flex h-10 items-center gap-2 rounded-full bg-border px-5 text-sm font-medium text-text-main hover:bg-surface hover:shadow-sm transition-all border border-transparent hover:border-border"
             >
               <span className="material-symbols-outlined text-[18px]">
                 location_city
@@ -150,7 +153,7 @@ export default function HomeContent() {
             </a>
             <a
               href="#day-trips"
-              className="group flex h-10 items-center gap-2 rounded-full bg-[#f3e7eb] px-5 text-sm font-medium text-[#1b0d12] hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-gray-200"
+              className="group flex h-10 items-center gap-2 rounded-full bg-border px-5 text-sm font-medium text-text-main hover:bg-surface hover:shadow-sm transition-all border border-transparent hover:border-border"
             >
               <span className="material-symbols-outlined text-[18px]">
                 landscape
@@ -303,13 +306,13 @@ export default function HomeContent() {
       {/* Section 2: Day Trips */}
       <section
         id="day-trips"
-        className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 bg-white rounded-3xl my-8"
+        className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 bg-surface rounded-3xl my-8"
       >
         <div className="mb-8 text-center">
           <span className="text-primary font-bold tracking-wider uppercase text-sm">
             {t("escapeRush")}
           </span>
-          <h2 className="mt-2 text-3xl font-bold text-[#1b0d12]">
+          <h2 className="mt-2 text-3xl font-bold text-text-main">
             {t("dayTripsTitle")}
           </h2>
           <p className="mx-auto mt-2 max-w-2xl text-gray-500">

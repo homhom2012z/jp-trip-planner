@@ -51,7 +51,7 @@ export default function LocationList({
         return (
           <div
             key={loc.id}
-            className="group flex flex-col bg-white rounded-xl overflow-hidden border border-[#f3e7eb] shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] cursor-pointer touch-manipulation"
+            className="group flex flex-col bg-surface rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] cursor-pointer touch-manipulation"
             onClick={() => onLocationClick?.(loc)}
           >
             {/* Image */}
@@ -111,12 +111,12 @@ export default function LocationList({
             <div className="flex flex-col p-4 gap-2">
               <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-1">
-                  <h3 className="text-lg font-bold text-[#1b0d12] leading-tight group-hover:text-primary transition-colors">
+                  <h3 className="text-lg font-bold text-text-main leading-tight group-hover:text-primary transition-colors">
                     {loc.name}
                   </h3>
                   <OpeningHoursBadge location={loc} />
                 </div>
-                <div className="flex items-center gap-1 bg-[#fff8e1] px-1.5 py-0.5 rounded text-yellow-700 text-xs font-bold">
+                <div className="flex items-center gap-1 bg-yellow-50 px-1.5 py-0.5 rounded text-yellow-700 text-xs font-bold">
                   <span className="material-symbols-outlined text-[14px] fill-1">
                     star
                   </span>
@@ -124,18 +124,18 @@ export default function LocationList({
                 </div>
               </div>
 
-              <p className="text-sm text-[#9a4c66] line-clamp-2">
+              <p className="text-sm text-text-secondary line-clamp-2">
                 {loc.type} •{" "}
                 {loc.priceJpy !== "-" ? `¥${loc.priceJpy}` : "Price varies"}
               </p>
 
-              <div className="mt-2 flex items-center gap-3 text-xs font-medium text-[#9a4c66]">
+              <div className="mt-2 flex items-center gap-3 text-xs font-medium text-text-secondary">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onLocationClick?.(loc);
                   }}
-                  className="flex items-center gap-1 hover:text-[#7a3c50] transition-colors"
+                  className="flex items-center gap-1 hover:text-text-main transition-colors"
                 >
                   <span className="material-symbols-outlined text-[16px]">
                     location_on

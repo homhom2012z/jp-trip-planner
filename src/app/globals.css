@@ -8,9 +8,13 @@
   --surface-light: #ffffff;
   --text-main: #1b0d12;
   --text-secondary: #9a4c66;
+  --border: #f3e7eb;
+  --surface-alt: #fdf2f4;
 
+  /* Semantic Mappings */
   --background: var(--background-light);
   --foreground: var(--text-main);
+  --surface: var(--surface-light);
 
   color-scheme: light; /* Force light mode */
 }
@@ -20,9 +24,11 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
-  --color-surface: var(--surface-light);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
   --color-text-main: var(--text-main);
   --color-text-secondary: var(--text-secondary);
+  --color-border: var(--border);
 
   --font-display: "Plus Jakarta Sans", sans-serif;
   --font-sans: var(--font-display);

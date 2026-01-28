@@ -63,7 +63,7 @@ export default function SharedTripPage() {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#fcf8f9]">
+      <div className="flex h-screen items-center justify-center bg-background">
         <div className="text-xl font-bold text-primary">Loading Trip...</div>
       </div>
     );
@@ -71,8 +71,8 @@ export default function SharedTripPage() {
 
   if (error || !data) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center bg-[#fcf8f9] gap-4">
-        <div className="text-2xl font-bold text-[#1b0d12]">Trip Not Found</div>
+      <div className="flex h-screen flex-col items-center justify-center bg-background gap-4">
+        <div className="text-2xl font-bold text-text-main">Trip Not Found</div>
         <p className="text-gray-500">This link may be invalid or expired.</p>
         <Link href="/" className="text-primary hover:underline font-bold">
           Go Home
@@ -82,11 +82,11 @@ export default function SharedTripPage() {
   }
 
   return (
-    <div className="flex h-[100dvh] flex-col bg-[#fcf8f9] font-display overflow-hidden">
+    <div className="flex h-[100dvh] flex-col bg-background font-display overflow-hidden">
       {/* Header (Read Only) */}
-      <header className="flex h-14 md:h-16 items-center justify-between border-b border-[#f3e7eb] bg-white px-4 md:px-6 shadow-sm flex-shrink-0 z-20 relative">
+      <header className="flex h-14 md:h-16 items-center justify-between border-b border-border bg-surface px-4 md:px-6 shadow-sm flex-shrink-0 z-20 relative">
         <div className="flex items-center gap-2">
-          <span className="text-lg md:text-xl font-black tracking-tight text-[#1b0d12]">
+          <span className="text-lg md:text-xl font-black tracking-tight text-text-main">
             JapanTrip
           </span>
           <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] md:text-xs font-bold text-primary whitespace-nowrap">
@@ -101,9 +101,9 @@ export default function SharedTripPage() {
       {/* Main Content */}
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden relative">
         {/* Sidebar List */}
-        <div className="order-2 md:order-1 flex w-full md:w-[400px] flex-1 flex-col border-r border-[#f3e7eb] bg-white md:flex-none z-10 overflow-hidden">
-          <div className="p-4 border-b border-[#f3e7eb] bg-white flex-shrink-0">
-            <h2 className="text-lg font-bold text-[#1b0d12]">
+        <div className="order-2 md:order-1 flex w-full md:w-[400px] flex-1 flex-col border-r border-border bg-surface md:flex-none z-10 overflow-hidden">
+          <div className="p-4 border-b border-border bg-surface flex-shrink-0">
+            <h2 className="text-lg font-bold text-text-main">
               {data.locations.length} Saved Places
             </h2>
           </div>

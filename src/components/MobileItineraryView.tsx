@@ -42,9 +42,9 @@ export default function MobileItineraryView({
   onAddDay,
 }: MobileItineraryViewProps) {
   return (
-    <div className="flex flex-col h-full bg-[#fcf8f9] pb-24">
+    <div className="flex flex-col h-full bg-background pb-24">
       {/* Unscheduled Items - Horizontal Scroll at Top */}
-      <div className="bg-white p-4 shadow-sm border-b border-gray-100 z-10 sticky top-0">
+      <div className="bg-surface p-4 shadow-sm border-b border-gray-100 z-10 sticky top-0">
         <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
           <span className="material-symbols-outlined text-[16px]">
             inventory_2
@@ -82,12 +82,12 @@ export default function MobileItineraryView({
         {days.map((day, dayIndex) => (
           <div key={day.id} className="relative">
             {/* Day Header */}
-            <div className="flex items-center justify-between mb-4 sticky top-0 bg-[#fcf8f9] z-10 py-2">
+            <div className="flex items-center justify-between mb-4 sticky top-0 bg-background z-10 py-2">
               <div className="flex items-center gap-3">
                 <div className="bg-primary text-white text-sm font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-md">
                   {dayIndex + 1}
                 </div>
-                <h2 className="text-xl font-bold text-[#1b0d12]">
+                <h2 className="text-xl font-bold text-text-main">
                   {day.title}
                 </h2>
               </div>

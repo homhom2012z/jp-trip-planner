@@ -2,12 +2,10 @@
 
 import { Location } from "@/lib/types";
 import LocationList from "./LocationList";
-import MobileBottomNav from "./MobileBottomNav";
-import BottomSheet from "./BottomSheet";
 import LocationDetailPanel from "./LocationDetailPanel";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useSavedPlaces } from "@/context/SavedPlacesContext";
 import { ItineraryProvider } from "@/context/ItineraryContext";
 import ItineraryPlanner from "./ItineraryPlanner";
@@ -35,24 +33,16 @@ export default function CityPageClient({
   locations,
 }: CityPageClientProps) {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null,
+    null
   );
   const [showMobileMap, setShowMobileMap] = useState(false);
+  const [isMobilePanelExpanded, setIsMobilePanelExpanded] = useState(false);
 
   const [activeFilter, setActiveFilter] = useState<
     "all" | "dining" | "attractions" | "top-rated" | "saved"
   >("all");
 
   const [searchQuery, setSearchQuery] = useState("");
-  // Naive mobile check (should be a hook, but for now purely for layout logic)
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024); // lg breakpoint is 1024
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
   const { isSaved } = useSavedPlaces();
   const { t } = useLanguage();
   const { user, locations: userLocations } = useUser();
@@ -60,7 +50,7 @@ export default function CityPageClient({
   const finalLocations = useMemo(() => {
     if (user && userLocations.length > 0) {
       return userLocations.filter(
-        (l) => l.city?.toLowerCase() === cityName.toLowerCase(),
+        (l) => l.city?.toLowerCase() === cityName.toLowerCase()
       );
     }
     return locations;
@@ -74,7 +64,7 @@ export default function CityPageClient({
       const q = searchQuery.toLowerCase().trim();
       result = result.filter(
         (l) =>
-          l.name.toLowerCase().includes(q) || l.type.toLowerCase().includes(q),
+          l.name.toLowerCase().includes(q) || l.type.toLowerCase().includes(q)
       );
     }
 
@@ -161,18 +151,14 @@ export default function CityPageClient({
 
   return (
     <ItineraryProvider>
-      <div className="flex flex-1 overflow-hidden relative bg-background h-full">
+      <div className="flex flex-1 overflow-hidden relative bg-[#fcf8f9] h-full">
         {/* ... Left Panel ... */}
 
-        {/* Left Panel: Search & List (Mobile: Full width, Desktop: 1/2) */}
-        <div
-          className={`${
-            showMobileMap ? "hidden lg:flex" : "flex"
-          } w-full lg:w-1/2 h-full relative border-r border-border bg-surface z-10 shadow-xl lg:shadow-none shrink-0 z-20`}
-        >
-          <div className="h-full flex flex-col w-full bg-surface">
-            {/* Scrollable Content Container with Bottom Nav Padding */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar pb-20 md:pb-0">
+        {/* Left Panel: Always Search & List */}
+        <div className="w-full lg:w-1/2 h-full relative border-r border-[#dadce0] bg-white z-10 shadow-xl lg:shadow-none shrink-0 z-20">
+          <div className="h-full flex flex-col w-full bg-white">
+            {/* Scrollable Content Container */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
               <div className="max-w-[900px] mx-auto px-8 py-8 flex flex-col gap-6">
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-xs text-[#70757a]">
@@ -185,15 +171,15 @@ export default function CityPageClient({
 
                 {/* Search Bar */}
                 <div className="relative">
-                  <div className="flex w-full items-center bg-surface border border-transparent shadow-[0_2px_6px_rgba(0,0,0,0.15)] rounded-lg h-10 px-4 focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+                  <div className="flex w-full items-center bg-white border border-transparent shadow-[0_2px_6px_rgba(0,0,0,0.15)] rounded-lg h-10 px-4 focus-within:ring-2 focus-within:ring-[#1a73e8]/50 transition-all">
                     <input
-                      className="w-full bg-transparent border-none focus:ring-0 text-sm text-text-main placeholder:text-[#5f6368] outline-none h-full"
+                      className="w-full bg-transparent border-none focus:ring-0 text-sm text-[#202124] placeholder:text-[#5f6368] outline-none h-full"
                       placeholder={`${t("searchPlaceholder")} ${cityName}`}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <div className="flex items-center gap-2 pl-2 border-l border-border ml-2">
-                      <button className="p-1.5 text-primary">
+                    <div className="flex items-center gap-2 pl-2 border-l border-gray-200 ml-2">
+                      <button className="p-1.5 text-[#1a73e8]">
                         <span className="material-symbols-outlined text-[20px]">
                           search
                         </span>
@@ -204,7 +190,7 @@ export default function CityPageClient({
 
                 {/* Page Heading */}
                 <div className="flex flex-col gap-1">
-                  <h1 className="text-xl font-normal text-text-main">
+                  <h1 className="text-xl font-normal text-[#202124]">
                     {cityName}
                   </h1>
                   <p className="text-xs text-[#70757a] leading-relaxed">
@@ -218,13 +204,13 @@ export default function CityPageClient({
                 </div>
 
                 {/* View Toggle Tabs */}
-                <div className="hidden md:flex p-1 bg-gray-100 rounded-lg">
+                <div className="flex p-1 bg-gray-100 rounded-lg">
                   <button
                     onClick={() => setActiveTab("explore")}
                     className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${
                       activeTab === "explore"
-                        ? "bg-surface text-primary shadow-sm"
-                        : "text-[#5f6368] hover:text-text-main"
+                        ? "bg-white text-[#1a73e8] shadow-sm"
+                        : "text-[#5f6368] hover:text-[#202124]"
                     }`}
                   >
                     {t("explore")}
@@ -233,8 +219,8 @@ export default function CityPageClient({
                     onClick={() => setActiveTab("planner")}
                     className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${
                       activeTab === "planner"
-                        ? "bg-surface text-primary shadow-sm"
-                        : "text-[#5f6368] hover:text-text-main"
+                        ? "bg-white text-[#1a73e8] shadow-sm"
+                        : "text-[#5f6368] hover:text-[#202124]"
                     }`}
                   >
                     {t("planner")}
@@ -248,13 +234,13 @@ export default function CityPageClient({
                       <button
                         onClick={() =>
                           setActiveFilter(
-                            activeFilter === "top-rated" ? "all" : "top-rated",
+                            activeFilter === "top-rated" ? "all" : "top-rated"
                           )
                         }
                         className={`flex h-8 shrink-0 items-center justify-center px-3 rounded-full border text-xs font-medium transition-colors ${
                           activeFilter === "top-rated"
-                            ? "bg-surface-alt text-primary border-surface-alt"
-                            : "bg-surface text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
+                            ? "bg-[#e8f0fe] text-[#1a73e8] border-[#e8f0fe]"
+                            : "bg-white text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
                         }`}
                       >
                         {t("topRated")}
@@ -262,13 +248,13 @@ export default function CityPageClient({
                       <button
                         onClick={() =>
                           setActiveFilter(
-                            activeFilter === "saved" ? "all" : "saved",
+                            activeFilter === "saved" ? "all" : "saved"
                           )
                         }
                         className={`flex h-8 shrink-0 items-center justify-center gap-1 px-3 rounded-full border text-xs font-medium transition-colors ${
                           activeFilter === "saved"
-                            ? "bg-surface-alt text-primary border-surface-alt"
-                            : "bg-surface text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
+                            ? "bg-[#e8f0fe] text-[#1a73e8] border-[#e8f0fe]"
+                            : "bg-white text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
                         }`}
                       >
                         <span className="material-symbols-outlined text-[16px]">
@@ -279,13 +265,13 @@ export default function CityPageClient({
                       <button
                         onClick={() =>
                           setActiveFilter(
-                            activeFilter === "dining" ? "all" : "dining",
+                            activeFilter === "dining" ? "all" : "dining"
                           )
                         }
                         className={`flex h-8 shrink-0 items-center justify-center px-3 rounded-full border text-xs font-medium transition-colors ${
                           activeFilter === "dining"
-                            ? "bg-surface-alt text-primary border-surface-alt"
-                            : "bg-surface text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
+                            ? "bg-[#e8f0fe] text-[#1a73e8] border-[#e8f0fe]"
+                            : "bg-white text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
                         }`}
                       >
                         {t("dining")}
@@ -295,13 +281,13 @@ export default function CityPageClient({
                           setActiveFilter(
                             activeFilter === "attractions"
                               ? "all"
-                              : "attractions",
+                              : "attractions"
                           )
                         }
                         className={`flex h-8 shrink-0 items-center justify-center px-3 rounded-full border text-xs font-medium transition-colors ${
                           activeFilter === "attractions"
-                            ? "bg-surface-alt text-primary border-surface-alt"
-                            : "bg-surface text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
+                            ? "bg-[#e8f0fe] text-[#1a73e8] border-[#e8f0fe]"
+                            : "bg-white text-[#3c4043] border-[#dadce0] hover:bg-gray-50"
                         }`}
                       >
                         {t("attractions")}
@@ -324,7 +310,7 @@ export default function CityPageClient({
                           // But usually we wait for sync.
                           // Trigger API
                           await import("@/services/api").then((m) =>
-                            m.api.deleteLocation(id),
+                            m.api.deleteLocation(id)
                           );
                           // Force refresh via window reload or sync hooks?
                           // Simple reload for safety as IDs shift
@@ -393,9 +379,9 @@ export default function CityPageClient({
 
           {/* Floating Search Bar (Mobile & Map View) */}
           <div className="absolute top-20 md:top-4 left-4 right-16 z-10 md:w-80 md:right-auto md:left-4">
-            <div className="flex w-full items-center bg-surface/90 backdrop-blur-sm border border-gray-200 shadow-md rounded-lg h-11 px-4 focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+            <div className="flex w-full items-center bg-white/90 backdrop-blur-sm border border-gray-200 shadow-md rounded-lg h-11 px-4 focus-within:ring-2 focus-within:ring-[#1a73e8]/50 transition-all">
               <input
-                className="flex-1 bg-transparent border-none focus:ring-0 text-sm text-text-main placeholder:text-[#5f6368] outline-none h-full min-w-0"
+                className="flex-1 bg-transparent border-none focus:ring-0 text-sm text-[#202124] placeholder:text-[#5f6368] outline-none h-full min-w-0"
                 placeholder={`${t("searchPlaceholder")} ${cityName}`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -411,7 +397,7 @@ export default function CityPageClient({
                 </button>
               )}
               {!searchQuery && (
-                <button className="p-1.5 text-primary border-l border-border ml-2 shrink-0">
+                <button className="p-1.5 text-[#1a73e8] border-l border-gray-200 ml-2 shrink-0">
                   <span className="material-symbols-outlined text-[20px]">
                     search
                   </span>
@@ -420,60 +406,44 @@ export default function CityPageClient({
             </div>
           </div>
 
-          {/* Desktop Overlay Detail Panel */}
-          {selectedLocation && !isMobile && (
-            <div className="absolute top-4 left-4 z-10 w-[400px] h-[calc(100%-32px)] bg-surface rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-left-4 fade-in border border-border">
+          {/* Floating Detail Panel (Option A) */}
+          {selectedLocation && (
+            <div
+              className={`absolute inset-x-0 bottom-0 z-50 md:h-[calc(100%-32px)] md:w-[400px] md:top-4 md:left-4 md:bottom-auto bg-white rounded-t-xl md:rounded-xl shadow-2xl overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-10 md:slide-in-from-left-4 fade-in ${
+                isMobilePanelExpanded ? "h-[80vh]" : "h-[45vh]"
+              }`}
+            >
               <LocationDetailPanel
                 location={selectedLocation}
                 onBack={() => {
                   setSelectedLocation(null);
                   setNearestStation(null);
+                  setIsMobilePanelExpanded(false);
                 }}
                 onStationFound={setNearestStation}
                 onLocationSelect={setSelectedLocation}
-                isExpanded={true}
-                onToggleExpand={() => {}}
+                isExpanded={isMobilePanelExpanded}
+                onToggleExpand={() =>
+                  setIsMobilePanelExpanded(!isMobilePanelExpanded)
+                }
               />
             </div>
           )}
 
-          {/* Mobile Detail Bottom Sheet */}
-          <BottomSheet
-            isOpen={!!selectedLocation && isMobile}
-            onClose={() => {
-              setSelectedLocation(null);
-              setNearestStation(null);
-            }}
-            snapPoints={[0.5, 0.9]}
-            initialSnap={0}
-            hideHandle={true}
-          >
-            {selectedLocation && (
-              <LocationDetailPanel
-                location={selectedLocation}
-                onBack={() => {
-                  setSelectedLocation(null);
-                  setNearestStation(null);
-                }}
-                onStationFound={setNearestStation}
-                onLocationSelect={setSelectedLocation}
-                isExpanded={true} // Always expanded in sheet content
-                onToggleExpand={() => setSelectedLocation(null)} // Swipe down to close
-              />
-            )}
-          </BottomSheet>
-
           {/* Floating Map Controls moved to MapMap.tsx */}
         </div>
+
+        {/* Mobile Map Toggle FAB - Always visible on mobile */}
+        <button
+          onClick={() => setShowMobileMap(!showMobileMap)}
+          className="md:hidden absolute bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-[#202124] text-white px-5 py-3 rounded-full shadow-lg font-medium text-sm transition-transform active:scale-95"
+        >
+          <span className="material-symbols-outlined text-[20px]">
+            {showMobileMap ? "list" : "map"}
+          </span>
+          {showMobileMap ? t("showList") : t("viewMap")}
+        </button>
       </div>
-      <MobileBottomNav
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        showMobileMap={showMobileMap}
-        setShowMobileMap={setShowMobileMap}
-        activeFilter={activeFilter}
-        setActiveFilter={setActiveFilter}
-      />
     </ItineraryProvider>
   );
 }

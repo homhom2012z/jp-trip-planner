@@ -13,13 +13,13 @@ const GlobalMap = dynamic(() => import("@/components/dashboard/GlobalMap"), {
 });
 const DataHealthGrid = dynamic(
   () => import("@/components/dashboard/DataHealthGrid"),
-  { ssr: false }
+  { ssr: false },
 );
 const ItineraryBoard = dynamic(
   () => import("@/components/dashboard/ItineraryBoard"),
   {
     ssr: false,
-  }
+  },
 );
 const BucketList = dynamic(() => import("@/components/dashboard/BucketList"), {
   ssr: false,
@@ -32,7 +32,7 @@ export default function DashboardPage() {
   const { user, profile, loading } = useUser();
   const router = useRouter();
   const [currentView, setCurrentView] = useState<"map" | "grid" | "itinerary">(
-    "map"
+    "map",
   );
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function DashboardPage() {
   if (!user || !profile) return null;
 
   return (
-    <div className="min-h-screen bg-[#fcf8f9] pb-20">
+    <div className="min-h-screen bg-background pb-20">
       <DashboardHero currentView={currentView} setView={setCurrentView} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-10">
@@ -92,16 +92,16 @@ export default function DashboardPage() {
         {currentView === "map" && (
           <>
             <section className="flex flex-col gap-4">
-              <h2 className="text-2xl font-bold text-[#202124]">
+              <h2 className="text-2xl font-bold text-text-main">
                 Trip Overview
               </h2>
-              <div className="w-full h-[500px] rounded-2xl overflow-hidden shadow-sm border border-gray-200 relative">
+              <div className="w-full h-[500px] rounded-2xl overflow-hidden shadow-sm border border-border relative">
                 <GlobalMap />
               </div>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-[#202124] mb-6">
+              <h2 className="text-2xl font-bold text-text-main mb-6">
                 Your Bucket List
               </h2>
               <BucketList />

@@ -80,7 +80,7 @@ export default function MapMap({
         }
       }
     },
-    [locations, selectedLocation],
+    [locations, selectedLocation]
   );
 
   const onUnmount = useCallback(function callback(map: google.maps.Map) {
@@ -90,7 +90,7 @@ export default function MapMap({
   // Toggle Styles based on Mode
   const currentStyles = useMemo(
     () => (showTransitLayer ? transitMapStyle : defaultMapStyle),
-    [showTransitLayer],
+    [showTransitLayer]
   );
 
   // Handlers for controls
@@ -217,7 +217,7 @@ export default function MapMap({
                   : undefined
               }
             />
-          ) : null,
+          ) : null
         )}
 
         {/* Nearest Station Marker */}
@@ -243,7 +243,7 @@ export default function MapMap({
         {/* Recenter */}
         <button
           onClick={handleRecenter}
-          className="bg-surface rounded shadow-md p-1.5 cursor-pointer hover:bg-surface-alt flex items-center justify-center"
+          className="bg-white rounded shadow-md p-1.5 cursor-pointer hover:bg-gray-50 flex items-center justify-center"
           title="Recenter Map"
         >
           <span className="material-symbols-outlined text-[#5f6368] text-xl">
@@ -254,8 +254,8 @@ export default function MapMap({
         {/* Transit Toggle */}
         <button
           onClick={onToggleTransit}
-          className={`bg-surface rounded shadow-md p-1.5 cursor-pointer hover:bg-surface-alt flex items-center justify-center transition-colors ${
-            showTransitLayer ? "text-primary" : "text-[#5f6368]"
+          className={`bg-white rounded shadow-md p-1.5 cursor-pointer hover:bg-gray-50 flex items-center justify-center transition-colors ${
+            showTransitLayer ? "text-[#1a73e8]" : "text-[#5f6368]"
           }`}
           title="Toggle Public Transit Map"
         >
@@ -271,7 +271,7 @@ export default function MapMap({
         {/* Zoom Controls */}
         <button
           onClick={handleZoomIn}
-          className="bg-surface rounded shadow-md p-1.5 cursor-pointer hover:bg-surface-alt flex items-center justify-center"
+          className="bg-white rounded shadow-md p-1.5 cursor-pointer hover:bg-gray-50 flex items-center justify-center"
           title="Zoom In"
         >
           <span className="material-symbols-outlined text-[#5f6368] text-xl">
@@ -280,7 +280,7 @@ export default function MapMap({
         </button>
         <button
           onClick={handleZoomOut}
-          className="bg-surface rounded shadow-md p-1.5 cursor-pointer hover:bg-surface-alt flex items-center justify-center"
+          className="bg-white rounded shadow-md p-1.5 cursor-pointer hover:bg-gray-50 flex items-center justify-center"
           title="Zoom Out"
         >
           <span className="material-symbols-outlined text-[#5f6368] text-xl">
