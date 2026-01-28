@@ -2,7 +2,6 @@ import {
   GoogleMap,
   useJsApiLoader,
   MarkerF,
-  InfoWindowF,
   Libraries,
   TransitLayer,
 } from "@react-google-maps/api";
@@ -38,7 +37,6 @@ export default function MapMap({
   zoom = 13,
   onMarkerClick,
   selectedLocation,
-  onCloseInfoWindow,
   stationMarker,
   onStationClick,
   showTransitLayer = false,
@@ -82,7 +80,7 @@ export default function MapMap({
         }
       }
     },
-    [locations, selectedLocation],
+    [locations, selectedLocation]
   );
 
   const onUnmount = useCallback(function callback(map: google.maps.Map) {
@@ -92,7 +90,7 @@ export default function MapMap({
   // Toggle Styles based on Mode
   const currentStyles = useMemo(
     () => (showTransitLayer ? transitMapStyle : defaultMapStyle),
-    [showTransitLayer],
+    [showTransitLayer]
   );
 
   // Handlers for controls
@@ -219,7 +217,7 @@ export default function MapMap({
                   : undefined
               }
             />
-          ) : null,
+          ) : null
         )}
 
         {/* Nearest Station Marker */}
@@ -235,54 +233,8 @@ export default function MapMap({
           />
         )}
 
-        {/* InfoWindow for Desktop */}
-        {/* InfoWindow for Desktop */}
-        {selectedLocation && selectedLocation.lat && selectedLocation.lng && (
-          <InfoWindowF
-            position={{ lat: selectedLocation.lat, lng: selectedLocation.lng }}
-            onCloseClick={onCloseInfoWindow}
-            options={{ pixelOffset: new window.google.maps.Size(0, -30) }}
-          >
-            <div className="min-w-[200px] max-w-[280px] p-1">
-              {/* Image */}
-              <div className="h-32 w-full rounded-lg overflow-hidden mb-2 bg-gray-100 relative">
-                <img
-                  src={
-                    selectedLocation.photoUrl?.split("?")[0] || // Simple check to avoid huge URLs if possible
-                    "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=" // Fallback logic would typically be robust
-                  }
-                  // Actually, let's use the object fields directly or a helper
-                  className="w-full h-full object-cover"
-                  alt={selectedLocation.name}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
-                />
-                <div className="absolute inset-0 bg-black/10" />
-              </div>
-
-              {/* Info */}
-              <h3 className="font-bold text-[#202124] text-base mb-1">
-                {selectedLocation.name}
-              </h3>
-              <p className="text-xs text-[#70757a] mb-2 line-clamp-2">
-                {selectedLocation.description || selectedLocation.type}
-              </p>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                <a
-                  href={selectedLocation.googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 bg-[#1a73e8] text-white text-xs font-medium py-1.5 px-3 rounded text-center hover:bg-[#1557b0] transition-colors"
-                >
-                  View on Google Maps
-                </a>
-              </div>
-            </div>
-          </InfoWindowF>
-        )}
+        {/* Note: TransitLayer component removed in favor of style-based transit visibility */}
+        {/* Restoring TransitLayer as it helps strictly enforce transit interactivity and styling */}
         {showTransitLayer && <TransitLayer />}
       </GoogleMap>
 
