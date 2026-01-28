@@ -38,6 +38,7 @@ export default function MapMap({
   zoom = 13,
   onMarkerClick,
   selectedLocation,
+  onCloseInfoWindow,
   stationMarker,
   onStationClick,
   showTransitLayer = false,
