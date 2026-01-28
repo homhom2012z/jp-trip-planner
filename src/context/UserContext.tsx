@@ -74,7 +74,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to load profile", err);
       }
     },
-    [user]
+    [user?.id],
   );
 
   const loadLocations = useCallback(async (tripOwnerId: string) => {
@@ -173,14 +173,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []); // Dependency is EMPTY -> Runs once
+  }, [loadSharedTrips]);
 
   // 2. React to activeTripId changes
   useEffect(() => {
     if (activeTripId) {
-      // When active trip changes, load that trip's data
-      // We do NOT reset activeTripId here.
       setLoading(true);
+      // Ensure we don't trigger multiple times if loadProfile changes but ID doesn't
+      // Actually, loadProfile changes if user.id changes.
+      // But we can just rely on activeTripId.
       Promise.all([
         loadProfile(activeTripId),
         loadLocations(activeTripId),
