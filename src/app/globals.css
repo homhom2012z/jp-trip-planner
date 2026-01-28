@@ -1,22 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  /* Design Reference Colors */
+  /* Light Mode (Default) */
   --primary: #ee2b6c;
   --primary-hover: #d61f5b;
   --background-light: #fcf8f9;
   --surface-light: #ffffff;
   --text-main: #1b0d12;
   --text-secondary: #9a4c66;
-  --border: #f3e7eb;
-  --surface-alt: #fdf2f4;
+  --border-light: #f3e7eb;
+  --surface-alt-light: #fdf2f4;
 
-  /* Semantic Mappings */
+  /* Semantic Mappings (Defaults) */
   --background: var(--background-light);
   --foreground: var(--text-main);
   --surface: var(--surface-light);
+  --border: var(--border-light);
+  --surface-alt: var(--surface-alt-light);
 
-  color-scheme: light; /* Force light mode */
+  /* color-scheme: light;  <-- Removed to allow auto switching */
+}
+
+.dark {
+  /* Dark Mode Overrides */
+  --background: #1a0f12; /* Dark Rose */
+  --foreground: #fcf8f9; /* Light Text */
+  --surface: #25161b; /* Slightly lighter dark */
+  --surface-alt: #2f1d22; /* Hover states */
+  --text-main: #fcf8f9;
+  --text-secondary: #d4a5b3; /* Muted pink for dark mode */
+  --border: #3a242c;
+
+  /* Adjust primary if needed, or keep same */
+  --primary: #ee2b6c;
+  --primary-hover: #d61f5b;
 }
 
 @theme inline {
