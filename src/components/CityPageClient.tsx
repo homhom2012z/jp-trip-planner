@@ -2,6 +2,7 @@
 
 import { Location } from "@/lib/types";
 import LocationList from "./LocationList";
+import MobileBottomNav from "./MobileBottomNav";
 import LocationDetailPanel from "./LocationDetailPanel";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -33,7 +34,7 @@ export default function CityPageClient({
   locations,
 }: CityPageClientProps) {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null
+    null,
   );
   const [showMobileMap, setShowMobileMap] = useState(false);
   const [isMobilePanelExpanded, setIsMobilePanelExpanded] = useState(false);
@@ -50,7 +51,7 @@ export default function CityPageClient({
   const finalLocations = useMemo(() => {
     if (user && userLocations.length > 0) {
       return userLocations.filter(
-        (l) => l.city?.toLowerCase() === cityName.toLowerCase()
+        (l) => l.city?.toLowerCase() === cityName.toLowerCase(),
       );
     }
     return locations;
@@ -64,7 +65,7 @@ export default function CityPageClient({
       const q = searchQuery.toLowerCase().trim();
       result = result.filter(
         (l) =>
-          l.name.toLowerCase().includes(q) || l.type.toLowerCase().includes(q)
+          l.name.toLowerCase().includes(q) || l.type.toLowerCase().includes(q),
       );
     }
 
@@ -204,7 +205,7 @@ export default function CityPageClient({
                 </div>
 
                 {/* View Toggle Tabs */}
-                <div className="flex p-1 bg-gray-100 rounded-lg">
+                <div className="hidden md:flex p-1 bg-gray-100 rounded-lg">
                   <button
                     onClick={() => setActiveTab("explore")}
                     className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${
@@ -234,7 +235,7 @@ export default function CityPageClient({
                       <button
                         onClick={() =>
                           setActiveFilter(
-                            activeFilter === "top-rated" ? "all" : "top-rated"
+                            activeFilter === "top-rated" ? "all" : "top-rated",
                           )
                         }
                         className={`flex h-8 shrink-0 items-center justify-center px-3 rounded-full border text-xs font-medium transition-colors ${
@@ -248,7 +249,7 @@ export default function CityPageClient({
                       <button
                         onClick={() =>
                           setActiveFilter(
-                            activeFilter === "saved" ? "all" : "saved"
+                            activeFilter === "saved" ? "all" : "saved",
                           )
                         }
                         className={`flex h-8 shrink-0 items-center justify-center gap-1 px-3 rounded-full border text-xs font-medium transition-colors ${
@@ -265,7 +266,7 @@ export default function CityPageClient({
                       <button
                         onClick={() =>
                           setActiveFilter(
-                            activeFilter === "dining" ? "all" : "dining"
+                            activeFilter === "dining" ? "all" : "dining",
                           )
                         }
                         className={`flex h-8 shrink-0 items-center justify-center px-3 rounded-full border text-xs font-medium transition-colors ${
@@ -281,7 +282,7 @@ export default function CityPageClient({
                           setActiveFilter(
                             activeFilter === "attractions"
                               ? "all"
-                              : "attractions"
+                              : "attractions",
                           )
                         }
                         className={`flex h-8 shrink-0 items-center justify-center px-3 rounded-full border text-xs font-medium transition-colors ${
@@ -310,7 +311,7 @@ export default function CityPageClient({
                           // But usually we wait for sync.
                           // Trigger API
                           await import("@/services/api").then((m) =>
-                            m.api.deleteLocation(id)
+                            m.api.deleteLocation(id),
                           );
                           // Force refresh via window reload or sync hooks?
                           // Simple reload for safety as IDs shift
@@ -432,18 +433,15 @@ export default function CityPageClient({
 
           {/* Floating Map Controls moved to MapMap.tsx */}
         </div>
-
-        {/* Mobile Map Toggle FAB - Always visible on mobile */}
-        <button
-          onClick={() => setShowMobileMap(!showMobileMap)}
-          className="md:hidden absolute bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-[#202124] text-white px-5 py-3 rounded-full shadow-lg font-medium text-sm transition-transform active:scale-95"
-        >
-          <span className="material-symbols-outlined text-[20px]">
-            {showMobileMap ? "list" : "map"}
-          </span>
-          {showMobileMap ? t("showList") : t("viewMap")}
-        </button>
       </div>
+      <MobileBottomNav
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        showMobileMap={showMobileMap}
+        setShowMobileMap={setShowMobileMap}
+        activeFilter={activeFilter}
+        setActiveFilter={setActiveFilter}
+      />
     </ItineraryProvider>
   );
 }
