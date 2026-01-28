@@ -45,9 +45,7 @@ export default function RootLayout({
         <LanguageProvider>
           <UserProvider>
             <SavedPlacesProvider>
-              <div className="hidden md:block">
-                <Header />
-              </div>
+              <Header />
               <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
                 {children}
               </div>
