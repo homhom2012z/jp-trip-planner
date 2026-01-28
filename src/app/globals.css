@@ -22,17 +22,16 @@
 }
 
 .dark {
-  /* Dark Mode Overrides */
-  /* Dark Mode Overrides - Neutral Palette */
-  --background: #121212; /* Neutral Black */
-  --foreground: #fcf8f9;
-  --surface: #1e1e1e; /* Dark Gray */
-  --surface-alt: #2a2a2a; /* Slightly lighter gray */
-  --text-main: #ffffff;
-  --text-secondary: #a1a1aa; /* Neutral Light Gray */
-  --border: #3f3f46; /* Zinc 700 */
+  /* Dark Mode - Softer Zinc Palette */
+  --background: #18181b; /* Zinc 900 - Softer than pure black */
+  --foreground: #fafafa; /* Zinc 50 - Softer white */
+  --surface: #27272a; /* Zinc 800 - Better contrast */
+  --surface-alt: #3f3f46; /* Zinc 700 - For hover states */
+  --text-main: #fafafa; /* Zinc 50 */
+  --text-secondary: #a1a1aa; /* Zinc 400 */
+  --border: #3f3f46; /* Zinc 700 - More visible */
 
-  /* Adjust primary if needed, or keep same */
+  /* Primary stays vibrant */
   --primary: #ee2b6c;
   --primary-hover: #d61f5b;
 }
