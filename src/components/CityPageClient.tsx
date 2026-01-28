@@ -164,11 +164,15 @@ export default function CityPageClient({
       <div className="flex flex-1 overflow-hidden relative bg-[#fcf8f9] h-full">
         {/* ... Left Panel ... */}
 
-        {/* Left Panel: Always Search & List */}
-        <div className="w-full lg:w-1/2 h-full relative border-r border-[#dadce0] bg-white z-10 shadow-xl lg:shadow-none shrink-0 z-20">
+        {/* Left Panel: Search & List (Mobile: Full width, Desktop: 1/2) */}
+        <div
+          className={`${
+            showMobileMap ? "hidden lg:flex" : "flex"
+          } w-full lg:w-1/2 h-full relative border-r border-[#dadce0] bg-white z-10 shadow-xl lg:shadow-none shrink-0 z-20`}
+        >
           <div className="h-full flex flex-col w-full bg-white">
-            {/* Scrollable Content Container */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
+            {/* Scrollable Content Container with Bottom Nav Padding */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar pb-20 md:pb-0">
               <div className="max-w-[900px] mx-auto px-8 py-8 flex flex-col gap-6">
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-xs text-[#70757a]">
