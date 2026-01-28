@@ -22,14 +22,14 @@
 }
 
 .dark {
-  /* Dark Mode - Softer Zinc Palette */
-  --background: #18181b; /* Zinc 900 - Softer than pure black */
-  --foreground: #fafafa; /* Zinc 50 - Softer white */
-  --surface: #27272a; /* Zinc 800 - Better contrast */
-  --surface-alt: #3f3f46; /* Zinc 700 - For hover states */
-  --text-main: #fafafa; /* Zinc 50 */
-  --text-secondary: #a1a1aa; /* Zinc 400 */
-  --border: #3f3f46; /* Zinc 700 - More visible */
+  /* Dark Mode - Modern High-Contrast Palette */
+  --background: #0a0a0a; /* Near-black for depth */
+  --foreground: #ffffff; /* Pure white for maximum readability */
+  --surface: #1a1a1a; /* Elevated surface */
+  --surface-alt: #2a2a2a; /* Hover/active states */
+  --text-main: #ffffff; /* Primary text - pure white */
+  --text-secondary: #b4b4b4; /* Secondary text - lighter gray */
+  --border: #333333; /* Visible borders */
 
   /* Primary stays vibrant */
   --primary: #ee2b6c;
