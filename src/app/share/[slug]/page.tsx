@@ -126,45 +126,50 @@ export default function SharedTripPage() {
                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider px-1">
                     {city}
                   </h3>
-                  {locations.map((loc) => (
-                    <div
-                      key={loc.id}
-                      id={`loc-${loc.id}`}
-                      onClick={() => setFocusedId(loc.id)}
-                      className={`flex gap-3 rounded-xl border p-3 shadow-sm cursor-pointer transition-all ${
-                        focusedId === loc.id
-                          ? "border-primary bg-primary/5 ring-1 ring-primary"
-                          : "border-gray-100 bg-[#fcf8f9] hover:bg-gray-50"
-                      }`}
-                    >
-                      <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
+                  <div className="grid grid-cols-2 gap-3">
+                    {locations.map((loc) => (
+                      <div
+                        key={loc.id}
+                        id={`loc-${loc.id}`}
+                        onClick={() => setFocusedId(loc.id)}
+                        className={`group relative aspect-square w-full cursor-pointer overflow-hidden rounded-2xl border bg-gray-100 transition-all ${
+                          focusedId === loc.id
+                            ? "border-primary ring-2 ring-primary ring-offset-2"
+                            : "border-transparent hover:shadow-lg"
+                        }`}
+                      >
+                        {/* Background Image */}
                         {loc.photoUrl ? (
                           <img
                             src={loc.photoUrl}
                             alt={loc.name}
-                            className="h-full w-full object-cover"
+                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />
                         ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-300">
-                            <span className="material-symbols-outlined">
+                          <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-400">
+                            <span className="material-symbols-outlined text-4xl">
                               image
                             </span>
                           </div>
                         )}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-[#1b0d12] line-clamp-1">
-                          {loc.name}
-                        </h3>
-                        {/* City is now in the group header, so maybe show type or just keep it minimal */}
-                        <div className="mt-1 flex gap-1">
-                          <span className="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-medium text-gray-500 border border-gray-100">
-                            {loc.type.replace(/_/g, " ")}
-                          </span>
+
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+                        {/* Content */}
+                        <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+                          <h3 className="line-clamp-2 text-sm font-bold leading-tight drop-shadow-md">
+                            {loc.name}
+                          </h3>
+                          <div className="mt-1 flex items-center gap-2">
+                            <span className="inline-flex items-center rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-medium backdrop-blur-sm">
+                              {loc.type.replace(/_/g, " ")}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
