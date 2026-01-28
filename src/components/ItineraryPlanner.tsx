@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import MobileItineraryView from "./MobileItineraryView";
 import {
   DndContext,
   closestCorners,
@@ -11,7 +12,6 @@ import {
   DragOverlay,
   defaultDropAnimationSideEffects,
   DragStartEvent,
-  DragOverEvent,
   DragEndEvent,
   DropAnimation,
   useDroppable,
@@ -24,7 +24,7 @@ import {
 } from "@dnd-kit/sortable";
 import { Location } from "@/lib/types";
 import { useSavedPlaces } from "@/context/SavedPlacesContext";
-import { useItinerary, Day } from "@/context/ItineraryContext";
+import { useItinerary } from "@/context/ItineraryContext";
 import DraggableLocationCard from "./DraggableLocationCard";
 
 // Droppable Container Helper
@@ -54,6 +54,14 @@ export default function ItineraryPlanner({ locations }: ItineraryPlannerProps) {
   const { days, setDays, addDay, removeDay } = useItinerary();
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // 1. Calculate Unscheduled items
   // Must be in savedIds, present in 'locations' lookup, and NOT in any day
   const unscheduledItems = useMemo(() => {
@@ -68,7 +76,9 @@ export default function ItineraryPlanner({ locations }: ItineraryPlannerProps) {
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
 
   const findContainer = (id: string) => {
@@ -85,34 +95,6 @@ export default function ItineraryPlanner({ locations }: ItineraryPlannerProps) {
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
-  };
-
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    const overId = over?.id;
-
-    if (!overId || active.id === overId) return;
-
-    // Find containers
-    const activeContainer = findContainer(active.id as string);
-    const overContainer = findContainer(overId as string);
-
-    if (
-      !activeContainer ||
-      !overContainer ||
-      activeContainer === overContainer
-    ) {
-      return;
-    }
-
-    // Moving between DIFFERENT containers (e.g. Unscheduled -> Day 1, or Day 1 -> Day 2)
-    // We need to optimistically update the state during drag over for visual feedback
-
-    // NOTE: For simplicity in this implementation, we will mostly handle structural updates in DragEnd
-    // But dnd-kit recommends doing "move between containers" logic here for smoother UI
-
-    // If overContainer is "unscheduled", we are moving back to pool
-    // If overContainer is a day, we are scheduling
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -145,7 +127,7 @@ export default function ItineraryPlanner({ locations }: ItineraryPlannerProps) {
               newDays[dayIndex].locationIds = arrayMove(
                 newDays[dayIndex].locationIds,
                 oldIndex,
-                newIndex
+                newIndex,
               );
               setDays(newDays);
             }
@@ -155,12 +137,12 @@ export default function ItineraryPlanner({ locations }: ItineraryPlannerProps) {
       // 2. Moving Between Containers
       else {
         // Remove from source
-        let newDays = [...days];
+        const newDays = [...days];
 
         // If source was a Day, remove it
         if (activeContainer !== "unscheduled") {
           const sourceDayIndex = newDays.findIndex(
-            (d) => d.id === activeContainer
+            (d) => d.id === activeContainer,
           );
           newDays[sourceDayIndex].locationIds = newDays[
             sourceDayIndex
@@ -173,20 +155,14 @@ export default function ItineraryPlanner({ locations }: ItineraryPlannerProps) {
           const overItemIndex =
             newDays[destDayIndex].locationIds.indexOf(overId);
 
-          let newIndex = newDays[destDayIndex].locationIds.length + 1;
           if (overItemIndex !== -1) {
             // Dropped on an item
-            // Logic simplified: just append or insert at index
-            // actually sortable triggers index logic, but here we just append if dropped on container
-            newIndex = overItemIndex;
+            // logic simplified
           } else {
-            // Dropped on the container (Day header or empty space)
+            // Dropped on the container
           }
 
-          // Insert
-          // Simple approach: push to end if dropped on container, insert if sorted
-          // To properly handle insertion index during cross-container drag, we usually need the 'DragOver' logic
-          // For now, simpler: append to end of destination day
+          // Insert at end
           newDays[destDayIndex].locationIds.push(activeId);
         }
 
@@ -218,105 +194,118 @@ export default function ItineraryPlanner({ locations }: ItineraryPlannerProps) {
       onDragEnd={handleDragEnd}
       // onDragOver omitted for simplicity
     >
-      <div className="flex flex-col h-full bg-gray-50">
-        {/* Unscheduled Pool */}
-        {/* Unscheduled Pool */}
-        <DroppableContainer
-          id="unscheduled"
-          className="bg-white border-b border-gray-200 p-4 shadow-sm z-10"
-        >
-          <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-            Unscheduled Places ({unscheduledItems.length})
-          </h3>
-          <SortableContext
+      {isMobile ? (
+        <MobileItineraryView
+          days={days}
+          unscheduledItems={unscheduledItems}
+          getLocation={getLocation}
+          onRemoveDay={removeDay}
+          onAddDay={addDay}
+        />
+      ) : (
+        <div className="flex flex-col h-full bg-gray-50">
+          {/* Unscheduled Pool */}
+          {/* Unscheduled Pool */}
+          <DroppableContainer
             id="unscheduled"
-            items={unscheduledItems} // passing strings is safe if they are unique
-            strategy={verticalListSortingStrategy}
+            className="bg-white border-b border-gray-200 p-4 shadow-sm z-10"
           >
-            {unscheduledItems.length === 0 ? (
-              <div className="text-sm text-gray-400 italic py-2">
-                All saved places scheduled!
-              </div>
-            ) : (
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
-                {/* Horizontal list of unscheduled items? Or vertical? 
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
+              Unscheduled Places ({unscheduledItems.length})
+            </h3>
+            <SortableContext
+              id="unscheduled"
+              items={unscheduledItems} // passing strings is safe if they are unique
+              strategy={verticalListSortingStrategy}
+            >
+              {unscheduledItems.length === 0 ? (
+                <div className="text-sm text-gray-400 italic py-2">
+                  All saved places scheduled!
+                </div>
+              ) : (
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x">
+                  {/* Horizontal list of unscheduled items? Or vertical? 
                         Design: "Unscheduled" usually pool on top or side. 
                         Let's make it a horizontal carousel for space efficiency.
                         BUT, SortableContext with vertical strategy might expect vertical. 
                         Actually, let's just make it a simple list for now.
                     */}
-                <div className="flex flex-col gap-2 w-full max-h-[200px] overflow-y-auto min-h-[50px]">
-                  {unscheduledItems.map((id) => {
-                    const loc = getLocation(id);
-                    return loc ? (
-                      <DraggableLocationCard key={id} id={id} location={loc} />
-                    ) : null;
-                  })}
-                </div>
-              </div>
-            )}
-          </SortableContext>
-        </DroppableContainer>
-
-        {/* Days List */}
-        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6">
-          {days.map((day) => (
-            <div key={day.id} className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <h2 className="font-bold text-gray-800">{day.title}</h2>
-                {days.length > 1 && (
-                  <button
-                    onClick={() => removeDay(day.id)}
-                    className="text-gray-400 hover:text-red-500"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">
-                      delete
-                    </span>
-                  </button>
-                )}
-              </div>
-
-              <DroppableContainer
-                id={day.id}
-                className="bg-gray-100 rounded-lg min-h-[100px] p-2 border-2 border-dashed border-gray-200 transition-colors hover:border-blue-200"
-              >
-                <SortableContext
-                  id={day.id}
-                  items={day.locationIds}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div className="flex flex-col gap-2 min-h-[50px]">
-                    {day.locationIds.length === 0 && (
-                      <div className="text-center text-gray-400 text-sm py-4 pointer-events-none">
-                        Drag places here
-                      </div>
-                    )}
-                    {day.locationIds.map((locId) => {
-                      const loc = getLocation(locId);
+                  <div className="flex flex-col gap-2 w-full max-h-[200px] overflow-y-auto min-h-[50px]">
+                    {unscheduledItems.map((id) => {
+                      const loc = getLocation(id);
                       return loc ? (
                         <DraggableLocationCard
-                          key={locId}
-                          id={locId}
+                          key={id}
+                          id={id}
                           location={loc}
                         />
                       ) : null;
                     })}
                   </div>
-                </SortableContext>
-              </DroppableContainer>
-            </div>
-          ))}
+                </div>
+              )}
+            </SortableContext>
+          </DroppableContainer>
 
-          <button
-            onClick={addDay}
-            className="w-full py-3 rounded-lg border-2 border-dashed border-gray-300 text-gray-500 font-medium hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
-          >
-            <span className="material-symbols-outlined">add_circle</span>
-            Add Day
-          </button>
+          {/* Days List */}
+          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6">
+            {days.map((day) => (
+              <div key={day.id} className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-bold text-gray-800">{day.title}</h2>
+                  {days.length > 1 && (
+                    <button
+                      onClick={() => removeDay(day.id)}
+                      className="text-gray-400 hover:text-red-500"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        delete
+                      </span>
+                    </button>
+                  )}
+                </div>
+
+                <DroppableContainer
+                  id={day.id}
+                  className="bg-gray-100 rounded-lg min-h-[100px] p-2 border-2 border-dashed border-gray-200 transition-colors hover:border-blue-200"
+                >
+                  <SortableContext
+                    id={day.id}
+                    items={day.locationIds}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="flex flex-col gap-2 min-h-[50px]">
+                      {day.locationIds.length === 0 && (
+                        <div className="text-center text-gray-400 text-sm py-4 pointer-events-none">
+                          Drag places here
+                        </div>
+                      )}
+                      {day.locationIds.map((locId) => {
+                        const loc = getLocation(locId);
+                        return loc ? (
+                          <DraggableLocationCard
+                            key={locId}
+                            id={locId}
+                            location={loc}
+                          />
+                        ) : null;
+                      })}
+                    </div>
+                  </SortableContext>
+                </DroppableContainer>
+              </div>
+            ))}
+
+            <button
+              onClick={addDay}
+              className="w-full py-3 rounded-lg border-2 border-dashed border-gray-300 text-gray-500 font-medium hover:border-blue-400 hover:text-blue-500 hover:bg-blue-50 transition-all flex items-center justify-center gap-2"
+            >
+              <span className="material-symbols-outlined">add_circle</span>
+              Add Day
+            </button>
+          </div>
         </div>
-      </div>
-
+      )}
       <DragOverlay dropAnimation={dropAnimation}>
         {activeId ? (
           getLocation(activeId) ? (

@@ -50,7 +50,7 @@ export default function LocationList({
         return (
           <div
             key={loc.id}
-            className="group flex flex-col bg-white rounded-xl overflow-hidden border border-[#f3e7eb] shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+            className="group flex flex-col bg-white rounded-xl overflow-hidden border border-[#f3e7eb] shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] cursor-pointer touch-manipulation"
             onClick={() => onLocationClick?.(loc)}
           >
             {/* Image */}
@@ -65,7 +65,7 @@ export default function LocationList({
                   e.stopPropagation();
                   toggleSaved(loc.id);
                 }}
-                className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-sm transition-all shadow-sm ${
+                className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-sm transition-all shadow-sm active:scale-90 ${
                   saved
                     ? "bg-white text-red-500"
                     : "bg-white/90 text-gray-400 hover:text-red-500 hover:scale-110"
@@ -86,7 +86,7 @@ export default function LocationList({
                     e.stopPropagation();
                     if (
                       window.confirm(
-                        `Are you sure you want to delete ${loc.name}?`
+                        `Are you sure you want to delete ${loc.name}?`,
                       )
                     ) {
                       onDelete(loc.id);

@@ -3,10 +3,11 @@
 import { Location } from "@/lib/types";
 import LocationList from "./LocationList";
 import MobileBottomNav from "./MobileBottomNav";
+import BottomSheet from "./BottomSheet";
 import LocationDetailPanel from "./LocationDetailPanel";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSavedPlaces } from "@/context/SavedPlacesContext";
 import { ItineraryProvider } from "@/context/ItineraryContext";
 import ItineraryPlanner from "./ItineraryPlanner";
@@ -37,13 +38,21 @@ export default function CityPageClient({
     null,
   );
   const [showMobileMap, setShowMobileMap] = useState(false);
-  const [isMobilePanelExpanded, setIsMobilePanelExpanded] = useState(false);
 
   const [activeFilter, setActiveFilter] = useState<
     "all" | "dining" | "attractions" | "top-rated" | "saved"
   >("all");
 
   const [searchQuery, setSearchQuery] = useState("");
+  // Naive mobile check (should be a hook, but for now purely for layout logic)
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024); // lg breakpoint is 1024
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const { isSaved } = useSavedPlaces();
   const { t } = useLanguage();
   const { user, locations: userLocations } = useUser();
@@ -407,29 +416,30 @@ export default function CityPageClient({
             </div>
           </div>
 
-          {/* Floating Detail Panel (Option A) */}
-          {selectedLocation && (
-            <div
-              className={`absolute inset-x-0 bottom-0 z-50 md:h-[calc(100%-32px)] md:w-[400px] md:top-4 md:left-4 md:bottom-auto bg-white rounded-t-xl md:rounded-xl shadow-2xl overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-10 md:slide-in-from-left-4 fade-in ${
-                isMobilePanelExpanded ? "h-[80vh]" : "h-[45vh]"
-              }`}
-            >
+          {/* Mobile Detail Bottom Sheet */}
+          <BottomSheet
+            isOpen={!!selectedLocation && isMobile}
+            onClose={() => {
+              setSelectedLocation(null);
+              setNearestStation(null);
+            }}
+            snapPoints={[0.5, 0.9]}
+            initialSnap={0}
+          >
+            {selectedLocation && (
               <LocationDetailPanel
                 location={selectedLocation}
                 onBack={() => {
                   setSelectedLocation(null);
                   setNearestStation(null);
-                  setIsMobilePanelExpanded(false);
                 }}
                 onStationFound={setNearestStation}
                 onLocationSelect={setSelectedLocation}
-                isExpanded={isMobilePanelExpanded}
-                onToggleExpand={() =>
-                  setIsMobilePanelExpanded(!isMobilePanelExpanded)
-                }
+                isExpanded={true} // Always expanded in sheet content
+                onToggleExpand={() => {}} // No internal toggle needed
               />
-            </div>
-          )}
+            )}
+          </BottomSheet>
 
           {/* Floating Map Controls moved to MapMap.tsx */}
         </div>
