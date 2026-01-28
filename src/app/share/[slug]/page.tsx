@@ -108,44 +108,63 @@ export default function SharedTripPage() {
             </h2>
           </div>
           <div className="flex-1 overflow-y-auto p-4 scroll-smooth">
-            <div className="flex flex-col gap-3 pb-20 md:pb-0">
-              {data.locations.map((loc) => (
-                <div
-                  key={loc.id}
-                  id={`loc-${loc.id}`}
-                  onClick={() => setFocusedId(loc.id)}
-                  className={`flex gap-3 rounded-xl border p-3 shadow-sm cursor-pointer transition-all ${
-                    focusedId === loc.id
-                      ? "border-primary bg-primary/5 ring-1 ring-primary"
-                      : "border-gray-100 bg-[#fcf8f9] hover:bg-gray-50"
-                  }`}
-                >
-                  <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
-                    {loc.photoUrl ? (
-                      <img
-                        src={loc.photoUrl}
-                        alt={loc.name}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-300">
-                        <span className="material-symbols-outlined">image</span>
+            <div className="flex flex-col gap-6 pb-20 md:pb-0">
+              {Object.entries(
+                data.locations.reduce(
+                  (acc, loc) => {
+                    const city = loc.city || "Other";
+                    if (!acc[city]) {
+                      acc[city] = [];
+                    }
+                    acc[city].push(loc);
+                    return acc;
+                  },
+                  {} as Record<string, Location[]>,
+                ),
+              ).map(([city, locations]) => (
+                <div key={city} className="flex flex-col gap-3">
+                  <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider px-1">
+                    {city}
+                  </h3>
+                  {locations.map((loc) => (
+                    <div
+                      key={loc.id}
+                      id={`loc-${loc.id}`}
+                      onClick={() => setFocusedId(loc.id)}
+                      className={`flex gap-3 rounded-xl border p-3 shadow-sm cursor-pointer transition-all ${
+                        focusedId === loc.id
+                          ? "border-primary bg-primary/5 ring-1 ring-primary"
+                          : "border-gray-100 bg-[#fcf8f9] hover:bg-gray-50"
+                      }`}
+                    >
+                      <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200">
+                        {loc.photoUrl ? (
+                          <img
+                            src={loc.photoUrl}
+                            alt={loc.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center bg-gray-100 text-gray-300">
+                            <span className="material-symbols-outlined">
+                              image
+                            </span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-[#1b0d12] line-clamp-1">
-                      {loc.name}
-                    </h3>
-                    <p className="text-xs text-gray-500 line-clamp-1">
-                      {loc.city}
-                    </p>
-                    <div className="mt-2 flex gap-1">
-                      <span className="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-medium text-gray-500 border border-gray-100">
-                        {loc.type.replace(/_/g, " ")}
-                      </span>
+                      <div>
+                        <h3 className="font-bold text-[#1b0d12] line-clamp-1">
+                          {loc.name}
+                        </h3>
+                        {/* City is now in the group header, so maybe show type or just keep it minimal */}
+                        <div className="mt-1 flex gap-1">
+                          <span className="rounded-md bg-white px-1.5 py-0.5 text-[10px] font-medium text-gray-500 border border-gray-100">
+                            {loc.type.replace(/_/g, " ")}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               ))}
             </div>
