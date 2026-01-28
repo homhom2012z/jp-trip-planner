@@ -14,6 +14,12 @@ export interface Location {
   distanceFromMetro?: string; // e.g. "500m from Kyoto Station"
   description?: string;
   googlePlaceId?: string; // For locations clicked directly from map POIs
+  openingHours?: {
+    weekdayText?: string[];
+    openNow?: boolean;
+  };
+  businessStatus?: string;
+  utcOffsetMinutes?: number;
 }
 
 export interface CityInfo {

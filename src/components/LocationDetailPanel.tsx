@@ -54,7 +54,7 @@ export default function LocationDetailPanel({
   const topRef = useRef<HTMLDivElement>(null);
   const [placeData, setPlaceData] = useState<RealPlaceData | null>(null);
   const [activePhoto, setActivePhoto] = useState<string>(
-    getFallbackImage(location.type)
+    getFallbackImage(location.type),
   );
   const [nearbyStations, setNearbyStations] = useState<
     Array<{
@@ -88,7 +88,7 @@ export default function LocationDetailPanel({
     }
 
     const service = new window.google.maps.places.PlacesService(
-      document.createElement("div")
+      document.createElement("div"),
     );
 
     // 1. Search for the place ID (or use provided one)
@@ -143,7 +143,7 @@ export default function LocationDetailPanel({
           // Set first photo if available
           if (place.photos && place.photos.length > 0) {
             setActivePhoto(
-              place.photos[0].getUrl({ maxWidth: 800, maxHeight: 600 })
+              place.photos[0].getUrl({ maxWidth: 800, maxHeight: 600 }),
             );
           }
 
@@ -170,7 +170,7 @@ export default function LocationDetailPanel({
                       const dist =
                         google.maps.geometry.spherical.computeDistanceBetween(
                           place.geometry.location,
-                          st.geometry.location
+                          st.geometry.location,
                         );
                       if (dist < 1000) {
                         distDisplay = `${Math.round(dist)}m`;
@@ -212,7 +212,7 @@ export default function LocationDetailPanel({
                     }
                   }
                 }
-              }
+              },
             );
           }
         }
@@ -257,7 +257,7 @@ export default function LocationDetailPanel({
     getDistanceFromHub(
       location.city,
       placeData.geometry.location.lat(),
-      placeData.geometry.location.lng()
+      placeData.geometry.location.lng(),
     );
 
   // Swipe logic
@@ -353,8 +353,8 @@ export default function LocationDetailPanel({
                     {roundedRating >= i + 1
                       ? "star"
                       : roundedRating >= i + 0.5
-                      ? "star_half"
-                      : "star_border"}
+                        ? "star_half"
+                        : "star_border"}
                   </span>
                 );
               })}
@@ -490,6 +490,35 @@ export default function LocationDetailPanel({
                   ⋅ {activeOpenHoursString(placeData)}
                 </span>
               )}
+
+              {/* Weekly Hours from Backend Data */}
+              {location.openingHours?.weekdayText && (
+                <details className="mt-2">
+                  <summary className="text-sm text-[#1a73e8] cursor-pointer hover:underline">
+                    View full hours
+                  </summary>
+                  <ul className="mt-2 text-sm text-[#70757a] space-y-1 pl-1">
+                    {location.openingHours.weekdayText.map((text, i) => (
+                      <li key={i}>{text}</li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+
+              {/* Fallback: Google API hours */}
+              {!location.openingHours?.weekdayText &&
+                placeData?.opening_hours?.weekday_text && (
+                  <details className="mt-2">
+                    <summary className="text-sm text-[#1a73e8] cursor-pointer hover:underline">
+                      View full hours
+                    </summary>
+                    <ul className="mt-2 text-sm text-[#70757a] space-y-1 pl-1">
+                      {placeData.opening_hours.weekday_text.map((text, i) => (
+                        <li key={i}>{text}</li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
             </div>
           </div>
 
@@ -527,7 +556,7 @@ export default function LocationDetailPanel({
                   key={i}
                   onClick={() =>
                     setActivePhoto(
-                      photo.getUrl({ maxWidth: 800, maxHeight: 600 })
+                      photo.getUrl({ maxWidth: 800, maxHeight: 600 }),
                     )
                   }
                   className="size-32 shrink-0 rounded-lg overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 active:scale-95 transition-all"

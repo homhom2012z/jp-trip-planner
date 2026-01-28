@@ -1,6 +1,7 @@
 import { Location } from "@/lib/types";
 import { getFallbackImage } from "@/lib/images";
 import { useSavedPlaces } from "@/context/SavedPlacesContext";
+import OpeningHoursBadge from "./OpeningHoursBadge";
 
 interface LocationListProps {
   locations: Location[];
@@ -109,9 +110,12 @@ export default function LocationList({
 
             <div className="flex flex-col p-4 gap-2">
               <div className="flex justify-between items-start">
-                <h3 className="text-lg font-bold text-[#1b0d12] leading-tight group-hover:text-primary transition-colors">
-                  {loc.name}
-                </h3>
+                <div className="flex flex-col gap-1">
+                  <h3 className="text-lg font-bold text-[#1b0d12] leading-tight group-hover:text-primary transition-colors">
+                    {loc.name}
+                  </h3>
+                  <OpeningHoursBadge location={loc} />
+                </div>
                 <div className="flex items-center gap-1 bg-[#fff8e1] px-1.5 py-0.5 rounded text-yellow-700 text-xs font-bold">
                   <span className="material-symbols-outlined text-[14px] fill-1">
                     star
