@@ -429,6 +429,7 @@ export default function CityPageClient({
             }}
             snapPoints={[0.5, 0.9]}
             initialSnap={0}
+            hideHandle={true}
           >
             {selectedLocation && (
               <LocationDetailPanel
@@ -440,7 +441,7 @@ export default function CityPageClient({
                 onStationFound={setNearestStation}
                 onLocationSelect={setSelectedLocation}
                 isExpanded={true} // Always expanded in sheet content
-                onToggleExpand={() => {}} // No internal toggle needed
+                onToggleExpand={() => setSelectedLocation(null)} // Swipe down to close
               />
             )}
           </BottomSheet>

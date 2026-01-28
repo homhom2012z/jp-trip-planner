@@ -130,12 +130,18 @@ export default function LocationList({
               </p>
 
               <div className="mt-2 flex items-center gap-3 text-xs font-medium text-[#9a4c66]">
-                <span className="flex items-center gap-1">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onLocationClick?.(loc);
+                  }}
+                  className="flex items-center gap-1 hover:text-[#7a3c50] transition-colors"
+                >
                   <span className="material-symbols-outlined text-[16px]">
                     location_on
                   </span>
                   Check Map
-                </span>
+                </button>
                 <span className="flex items-center gap-1">
                   <span className="material-symbols-outlined text-[16px]">
                     payments

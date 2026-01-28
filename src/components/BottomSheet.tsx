@@ -9,12 +9,14 @@ interface BottomSheetProps {
   children: ReactNode;
   snapPoints?: number[];
   initialSnap?: number;
+  hideHandle?: boolean;
 }
 
 export default function BottomSheet({
   isOpen,
   onClose,
   children,
+  hideHandle = false,
 }: BottomSheetProps) {
   const [isRendered, setIsRendered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -58,12 +60,14 @@ export default function BottomSheet({
         }`}
       >
         {/* Handle */}
-        <div
-          className="flex justify-center p-4 cursor-pointer"
-          onClick={onClose}
-        >
-          <div className="h-1.5 w-12 rounded-full bg-gray-300" />
-        </div>
+        {!hideHandle && (
+          <div
+            className="flex justify-center p-4 cursor-pointer"
+            onClick={onClose}
+          >
+            <div className="h-1.5 w-12 rounded-full bg-gray-300" />
+          </div>
+        )}
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto pb-safe">{children}</div>
