@@ -95,7 +95,7 @@ export default function DashboardPage() {
               <h2 className="text-2xl font-bold text-text-main">
                 Trip Overview
               </h2>
-              <div className="w-full h-[500px] rounded-2xl overflow-hidden shadow-sm border border-border relative">
+              <div className="w-full h-[300px] md:h-[500px] rounded-2xl overflow-hidden shadow-sm border border-border relative">
                 <GlobalMap />
               </div>
             </section>

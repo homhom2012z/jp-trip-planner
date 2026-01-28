@@ -23,13 +23,14 @@
 
 .dark {
   /* Dark Mode Overrides */
-  --background: #1a0f12; /* Dark Rose */
-  --foreground: #fcf8f9; /* Light Text */
-  --surface: #25161b; /* Slightly lighter dark */
-  --surface-alt: #2f1d22; /* Hover states */
-  --text-main: #fcf8f9;
-  --text-secondary: #d4a5b3; /* Muted pink for dark mode */
-  --border: #3a242c;
+  /* Dark Mode Overrides - Neutral Palette */
+  --background: #121212; /* Neutral Black */
+  --foreground: #fcf8f9;
+  --surface: #1e1e1e; /* Dark Gray */
+  --surface-alt: #2a2a2a; /* Slightly lighter gray */
+  --text-main: #ffffff;
+  --text-secondary: #a1a1aa; /* Neutral Light Gray */
+  --border: #3f3f46; /* Zinc 700 */
 
   /* Adjust primary if needed, or keep same */
   --primary: #ee2b6c;
