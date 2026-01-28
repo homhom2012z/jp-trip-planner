@@ -28,7 +28,7 @@
   --surface: #1a1a1a; /* Elevated surface */
   --surface-alt: #2a2a2a; /* Hover/active states */
   --text-main: #ffffff; /* Primary text - pure white */
-  --text-secondary: #b4b4b4; /* Secondary text - lighter gray */
+  --text-secondary: #d4d4d4; /* Secondary text - improved contrast */
   --border: #333333; /* Visible borders */
 
   /* Primary stays vibrant */
