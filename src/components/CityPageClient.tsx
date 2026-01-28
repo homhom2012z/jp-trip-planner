@@ -420,6 +420,23 @@ export default function CityPageClient({
             </div>
           </div>
 
+          {/* Desktop Overlay Detail Panel */}
+          {selectedLocation && !isMobile && (
+            <div className="absolute top-4 left-4 z-10 w-[400px] h-[calc(100%-32px)] bg-white rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-left-4 fade-in border border-gray-200">
+              <LocationDetailPanel
+                location={selectedLocation}
+                onBack={() => {
+                  setSelectedLocation(null);
+                  setNearestStation(null);
+                }}
+                onStationFound={setNearestStation}
+                onLocationSelect={setSelectedLocation}
+                isExpanded={true}
+                onToggleExpand={() => {}}
+              />
+            </div>
+          )}
+
           {/* Mobile Detail Bottom Sheet */}
           <BottomSheet
             isOpen={!!selectedLocation && isMobile}
